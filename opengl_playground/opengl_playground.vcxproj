@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\ebo.cpp" />
     <ClCompile Include="src\external\stb\stb_image.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -150,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="src\ebo.h" />
     <ClInclude Include="src\external\stb\stb_image.h" />
+    <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\texture.h" />
     <ClInclude Include="src\vbo.h" />
     <ClInclude Include="src\shader.h" />

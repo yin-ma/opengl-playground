@@ -9,6 +9,7 @@
 #include "vao.h"
 #include "vbo.h"
 #include "ebo.h"
+#include "camera.h"
 
 #include "texture.h"
 
@@ -87,22 +88,14 @@ int main(void)
 
     shader.setUniform1i("tex0", texture.unitID);
 
-    glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 proj = glm::mat4(1.0f);
 
-    model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    view = glm::translate(view, glm::vec3(0.0, -0.25f, -10.0f));
-    proj = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+    // position, center, up
+    Camera camera(glm::vec3(0.0f, 0.0f, 12.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 cameraMat = camera.getMatrix();
 
-    int modelLoc = glGetUniformLocation(shader.shaderID, "model");
-    int viewLoc = glGetUniformLocation(shader.shaderID, "view");
-    int projLoc = glGetUniformLocation(shader.shaderID, "proj");
-
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
-
+    int matLoc = glGetUniformLocation(shader.shaderID, "cameraMat");
+    glUniformMatrix4fv(matLoc, 1, GL_FALSE, glm::value_ptr(cameraMat));
+ 
     glEnable(GL_DEPTH_TEST);
 
     /* Loop until the user closes the window */
@@ -110,8 +103,6 @@ int main(void)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         /* draw call */
         glDrawElements(GL_TRIANGLES, 3 * 6, GL_UNSIGNED_INT, 0);
 
