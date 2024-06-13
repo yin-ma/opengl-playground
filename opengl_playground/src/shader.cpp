@@ -60,3 +60,9 @@ void Shader::unbind()
 {
     glUseProgram(0);
 }
+
+void Shader::setUniform1i(const std::string& uniform, int i)
+{
+    unsigned int uni = glGetUniformLocation(shaderID, uniform.c_str());
+    glUniform1i(uni, i);
+}

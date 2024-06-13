@@ -14,4 +14,6 @@ public:
 	static std::string parseShader(const std::string& filePath);
 	void bind();
 	void unbind();
+
+	void setUniform1i(const std::string& uniform, int i);
 };
