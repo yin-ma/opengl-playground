@@ -145,6 +145,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\texture.cpp" />
+    <ClCompile Include="src\userinput.cpp" />
     <ClCompile Include="src\vao.cpp" />
     <ClCompile Include="src\vbo.cpp" />
   </ItemGroup>
@@ -153,6 +154,7 @@
     <ClInclude Include="src\external\stb\stb_image.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\texture.h" />
+    <ClInclude Include="src\userinput.h" />
     <ClInclude Include="src\vbo.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\vao.h" />

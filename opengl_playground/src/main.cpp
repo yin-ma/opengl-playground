@@ -10,8 +10,9 @@
 #include "vbo.h"
 #include "ebo.h"
 #include "camera.h"
-
 #include "texture.h"
+
+#include "userinput.h"
 
 #include <iostream>
 
@@ -90,11 +91,13 @@ int main(void)
 
 
     // position, center, up
-    Camera camera(glm::vec3(0.0f, 0.0f, 12.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    Camera camera(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 cameraMat = camera.getMatrix();
 
     int matLoc = glGetUniformLocation(shader.shaderID, "cameraMat");
     glUniformMatrix4fv(matLoc, 1, GL_FALSE, glm::value_ptr(cameraMat));
+
+    UserInput userInput(window);
  
     glEnable(GL_DEPTH_TEST);
 
@@ -102,6 +105,12 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        
+        userInput.handleInput(camera);
+
+        cameraMat = camera.getMatrix();
+        glUniformMatrix4fv(matLoc, 1, GL_FALSE, glm::value_ptr(cameraMat));
 
         /* draw call */
         glDrawElements(GL_TRIANGLES, 3 * 6, GL_UNSIGNED_INT, 0);
