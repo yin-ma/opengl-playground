@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\ebo.cpp" />
+    <ClCompile Include="src\external\stb\stb_image.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\vao.cpp" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ebo.h" />
+    <ClInclude Include="src\external\stb\stb_image.h" />
     <ClInclude Include="src\vbo.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\vao.h" />
