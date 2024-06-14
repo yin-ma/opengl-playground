@@ -162,6 +162,8 @@
   <ItemGroup>
     <None Include="res\fragmentShader.shader" />
     <None Include="res\vertexShader.shader" />
+    <None Include="res\lightFragment.shader" />
+    <None Include="res\lightVertex.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
