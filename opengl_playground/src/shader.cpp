@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include "shader.h"
 
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -20,13 +21,38 @@ Shader::Shader(const std::string& vertexShaderFilePath, const std::string& fragm
     glShaderSource(vertexShader, 1, &vertexSrc, nullptr);
     glCompileShader(vertexShader);
 
+    int sucess;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &sucess);
+    if (!sucess)
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cout << "vertex shader compile error :\n" << infoLog << std::endl;
+    }
+
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentSrc, nullptr);
     glCompileShader(fragmentShader);
 
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &sucess);
+    if (!sucess)
+    {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cout << "fragment shader compile error :\n" << infoLog << std::endl;
+    }
+
+    // link shaders
     glAttachShader(shaderID, vertexShader);
     glAttachShader(shaderID, fragmentShader);
     glLinkProgram(shaderID);
+
+    glGetProgramiv(shaderID, GL_LINK_STATUS, &sucess);
+    if (!sucess)
+    {
+        glGetProgramInfoLog(shaderID, 512, NULL, infoLog);
+        std::cout << "program linking error :\n" << infoLog << std::endl;
+    }
+
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }

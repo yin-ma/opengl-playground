@@ -96,19 +96,23 @@ int main(void)
     window = glfwCreateWindow(600, 600, "Opengl Playground", NULL, NULL);
     if (!window)
     {
+        std::cout << "fail to create glfw window" << std::endl;
         glfwTerminate();
         return -1;
     }
+
     glfwMakeContextCurrent(window);
     //glfwSwapInterval(1);
 
     if (glewInit() != GLEW_OK)
     {
-        std::cout << "glew fail to load!" << std::endl;
+        std::cout << "fail to init glew" << std::endl;
         return -1;
     }
 
     std::cout << glGetString(GL_VERSION) << std::endl;
+
+    glViewport(0, 0, 600, 600);
     
     // init buffers & layouts
     VAO vao;
@@ -185,7 +189,9 @@ int main(void)
     shader.unbind();
 
     UserInput userInput(window);
+    glClearColor(0.02f, 0.02f, 0.02f, 1.0f);
     glEnable(GL_DEPTH_TEST);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
