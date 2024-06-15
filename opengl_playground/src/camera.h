@@ -14,11 +14,13 @@ public:
 	glm::vec3 position;
 	glm::vec3 center;
 	glm::vec3 up;
+	float yaw = -90.0f;
+	float pitch = 0.0f;
 	float speed;
 
-	Camera(glm::vec3 p, glm::vec3 c, glm::vec3 u);
+	Camera(glm::vec3 pos, glm::vec3 ctr, glm::vec3 u);
 
 	glm::mat4 getMatrix();
 	void move(const std::string& dir);
-	void rotate(const std::string& dir);
+	void rotate(float yawAngle, float pitchAngle);
 };

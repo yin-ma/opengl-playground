@@ -15,5 +15,5 @@ public:
 	void bind();
 	void unbind();
 
-	void setUniform1i(const std::string& uniform, int i);
+	void setUniform1i(const std::string& key, int value);
 };

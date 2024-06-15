@@ -9,6 +9,8 @@
 Shader::Shader(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath)
 {
     shaderID = glCreateProgram();
+    int sucess;
+    char infoLog[512];
 
     // setup vertex shader
     std::string vertexShaderSource = parseShader(vertexShaderFilePath).c_str();
@@ -21,8 +23,6 @@ Shader::Shader(const std::string& vertexShaderFilePath, const std::string& fragm
     glShaderSource(vertexShader, 1, &vertexSrc, nullptr);
     glCompileShader(vertexShader);
 
-    int sucess;
-    char infoLog[512];
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &sucess);
     if (!sucess)
     {
@@ -87,8 +87,7 @@ void Shader::unbind()
     glUseProgram(0);
 }
 
-void Shader::setUniform1i(const std::string& uniform, int i)
+void Shader::setUniform1i(const std::string& key, int value)
 {
-    unsigned int uni = glGetUniformLocation(shaderID, uniform.c_str());
-    glUniform1i(uni, i);
+    glUniform1i(glGetUniformLocation(shaderID, key.c_str()), value);
 }

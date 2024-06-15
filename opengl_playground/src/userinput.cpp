@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "userinput.h"
 #include "camera.h"
 
@@ -24,22 +26,6 @@ void UserInput::handleInput(Camera& camera)
     {
         camera.move("right");
     }
-    if (glfwGetKey(m_window, GLFW_KEY_Q) == GLFW_PRESS)
-    {
-        camera.rotate("left");
-    }
-    if (glfwGetKey(m_window, GLFW_KEY_E) == GLFW_PRESS)
-    {
-        camera.rotate("right");
-    }
-    if (glfwGetKey(m_window, GLFW_KEY_Z) == GLFW_PRESS)
-    {
-        camera.rotate("up");
-    }
-    if (glfwGetKey(m_window, GLFW_KEY_C) == GLFW_PRESS)
-    {
-        camera.rotate("down");
-    }
     if (glfwGetKey(m_window, GLFW_KEY_1) == GLFW_PRESS)
     {
         camera.move("up");
@@ -48,4 +34,30 @@ void UserInput::handleInput(Camera& camera)
     {
         camera.move("down");
     }
+}
+
+void UserInput::handleMouse(GLFWwindow* window, Camera& camera)
+{
+    if (firstEnter)
+    {
+        double xIn, yIn;
+        glfwGetCursorPos(window, &xIn, &yIn);
+
+        xLast = static_cast<double>(xIn);
+        yLast = static_cast<double>(yIn);
+        firstEnter = false;
+        return;
+    }
+    double xIn, yIn;
+    glfwGetCursorPos(window, &xIn, &yIn);
+
+    float xOffset = static_cast<double>(xIn) - xLast;
+    float yOffset = yLast - static_cast<double>(yIn);
+
+    float sensitivity = 0.1f;
+
+    camera.rotate(xOffset * sensitivity, yOffset * sensitivity);
+    
+    xLast = static_cast<double>(xIn);
+    yLast = static_cast<double>(yIn);
 }

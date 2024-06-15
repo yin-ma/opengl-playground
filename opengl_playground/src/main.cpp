@@ -189,6 +189,8 @@ int main(void)
     shader.unbind();
 
     UserInput userInput(window);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     glClearColor(0.02f, 0.02f, 0.02f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -199,6 +201,7 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         userInput.handleInput(camera);
+        userInput.handleMouse(window, camera);
 
         cameraMat = camera.getMatrix();
 
