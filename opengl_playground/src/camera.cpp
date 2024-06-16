@@ -61,4 +61,8 @@ void Camera::rotate(float yawAngle, float pitchAngle)
 	front.y = sin(glm::radians(pitch));
 	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	center = glm::normalize(front);
+
+	glm::vec3 right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
+	up = glm::normalize(glm::cross(right, front));
+
 }

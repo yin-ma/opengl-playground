@@ -83,6 +83,22 @@ unsigned int lightIndices[] =
 };
 
 
+float planeVertices[] =
+{ //     COORDINATES     // normal
+    -4.0f, 0.0f, -4.0f, 0.0f, 1.0f, 0.0f,
+    -4.0f, 0.0f, 4.0f, 0.0f, 1.0f, 0.0f,
+     4.0f, 0.0f, -4.0f, 0.0f, 1.0f, 0.0f,
+     4.0f, 0.0f, 4.0f, 0.0f, 1.0f, 0.0f,
+};
+
+
+unsigned int planeIndices[] =
+{
+    0, 1, 2,
+    2, 1, 3,
+};
+
+
 int main(void)
 {
     GLFWwindow* window;
@@ -142,16 +158,35 @@ int main(void)
     // camera position, center, up
     Camera camera(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-    int matLoc = glGetUniformLocation(shader.shaderID, "cameraMat");
+    // set uniform
     glm::mat4 cameraMat = camera.getMatrix();
-    glUniformMatrix4fv(matLoc, 1, GL_FALSE, glm::value_ptr(cameraMat));
-
-    int modelLoc = glGetUniformLocation(shader.shaderID, "model");
     glm::mat4 model = glm::mat4(1.0f);
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    shader.setUniformMatrix4fv("cameraMat", glm::value_ptr(cameraMat));
+    shader.setUniformMatrix4fv("model", glm::value_ptr(model));
 
     shader.unbind();
     vao.unbind();
+
+    // init plane
+    VAO planeVAO;
+    VBO planeVBO(planeVertices, sizeof(planeVertices));
+    EBO planeEBO(planeIndices, sizeof(planeIndices));
+    planeVAO.bind();
+    planeVBO.bind();
+    planeEBO.bind();
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    Shader planeShader("./res/planeVertex.shader", "./res/planeFragment.shader");
+    planeShader.bind();
+
+    glm::mat4 planeModel = glm::mat4(1.0f);
+    planeShader.setUniformMatrix4fv("model", glm::value_ptr(planeModel));
+    planeShader.setUniformMatrix4fv("cameraMatrix", glm::value_ptr(cameraMat));
+    planeShader.setUniform3fv("cameraPosition", glm::value_ptr(camera.position));
  
     // init light source
     VAO lightVAO;
@@ -167,26 +202,26 @@ int main(void)
     Shader lightShader("./res/lightVertex.shader", "./res/lightFragment.shader");
     lightShader.bind();
 
-    glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glm::vec3 lightPosition(0.5f, 0.5f, 0.5f);
+    glm::vec4 lightColor(0.9f, 0.9f, 0.9f, 1.0f);
+    glm::vec3 lightPosition(0.8f, 0.8f, 0.8f);
     glm::mat4 lightModel = glm::translate(lightPosition);
 
-    int lightMatLoc = glGetUniformLocation(lightShader.shaderID, "model");
-    int lightCamLoc = glGetUniformLocation(lightShader.shaderID, "cameraMatrix");
-    int lightColorLoc = glGetUniformLocation(lightShader.shaderID, "lightColor");
-
-    glUniformMatrix4fv(lightMatLoc, 1, GL_FALSE, glm::value_ptr(lightModel));
-    glUniformMatrix4fv(lightCamLoc, 1, GL_FALSE, glm::value_ptr(cameraMat));
-    glUniform4fv(lightColorLoc, 1, glm::value_ptr(lightColor));
+    lightShader.setUniformMatrix4fv("model", glm::value_ptr(lightModel));
+    lightShader.setUniformMatrix4fv("cameraMatrix", glm::value_ptr(cameraMat));
+    lightShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
 
     lightShader.unbind();
     lightVAO.unbind();
 
     shader.bind();
-    glUniform3fv(glGetUniformLocation(shader.shaderID, "lightPos"), 1, glm::value_ptr(lightPosition));
-    glUniform4fv(glGetUniformLocation(shader.shaderID, "lightColor"), 1, glm::value_ptr(lightColor));
-    glUniform3fv(glGetUniformLocation(shader.shaderID, "camPos"), 1, glm::value_ptr(camera.position));
+    shader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
+    shader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
+    shader.setUniform3fv("camPos", glm::value_ptr(camera.position));
     shader.unbind();
+
+    planeShader.bind();
+    planeShader.setUniform3fv("lightPosition", glm::value_ptr(lightPosition));
+    planeShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
 
     UserInput userInput(window);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -206,15 +241,31 @@ int main(void)
         cameraMat = camera.getMatrix();
 
         /* draw call */
-        vao.bind();
-        shader.bind();
-        glUniformMatrix4fv(matLoc, 1, GL_FALSE, glm::value_ptr(cameraMat));
-        glDrawElements(GL_TRIANGLES, 3 * 6, GL_UNSIGNED_INT, 0);
 
+        // draw light
+        glm::vec3 lPos = glm::rotate(lightPosition, glm::radians((float)glfwGetTime()*50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         lightVAO.bind();
         lightShader.bind();
-        glUniformMatrix4fv(lightCamLoc, 1, GL_FALSE, glm::value_ptr(cameraMat));
+        lightModel = glm::translate(lPos);
+        lightShader.setUniformMatrix4fv("model", glm::value_ptr(lightModel));
+        lightShader.setUniformMatrix4fv("cameraMatrix", glm::value_ptr(cameraMat));
         glDrawElements(GL_TRIANGLES, 3 * 12, GL_UNSIGNED_INT, 0);
+
+        // draw pirimit
+        vao.bind();
+        shader.bind();
+        shader.setUniform3fv("camPos", glm::value_ptr(camera.position));
+        shader.setUniform3fv("lightPos", glm::value_ptr(lPos));
+        shader.setUniformMatrix4fv("cameraMat", glm::value_ptr(cameraMat));
+        glDrawElements(GL_TRIANGLES, 3 * 6, GL_UNSIGNED_INT, 0);
+
+        // draw plane
+        planeVAO.bind();
+        planeShader.bind();
+        planeShader.setUniform3fv("cameraPosition", glm::value_ptr(camera.position));
+        planeShader.setUniform3fv("lightPosition", glm::value_ptr(lPos));
+        planeShader.setUniformMatrix4fv("cameraMatrix", glm::value_ptr(cameraMat));
+        glDrawElements(GL_TRIANGLES, 3 * 2, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

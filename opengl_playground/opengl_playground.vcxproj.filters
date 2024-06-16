@@ -74,5 +74,7 @@
     <None Include="res\fragmentShader.shader" />
     <None Include="res\lightVertex.shader" />
     <None Include="res\lightFragment.shader" />
+    <None Include="res\planeVertex.shader" />
+    <None Include="res\planeFragment.shader" />
   </ItemGroup>
 </Project>
