@@ -11,7 +11,7 @@ uniform vec4 lightColor;
 
 void main()
 {
-	vec4 planeColor = vec4(0.6f, 0.12f, 0.12f, 1.0f);
+	vec4 planeColor = vec4(0.42f, 0.12f, 0.12f, 1.0f);
 	float ambient = 0.2f;
 
 	vec3 normal = normalize(normal);

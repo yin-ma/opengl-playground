@@ -4,7 +4,6 @@
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
 
-
 #include "shader.h"
 #include "vao.h"
 #include "vbo.h"
@@ -128,46 +127,49 @@ int main(void)
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
+    // opengl config
     glViewport(0, 0, 600, 600);
+    glClearColor(0.02f, 0.02f, 0.02f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    UserInput userInput(window);
+
+    // init camera(position, center, up)
+    Camera camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     
-    // init buffers & layouts
-    VAO vao;
-    VBO vbo(vertices, sizeof(vertices));
-    EBO ebo(indices, sizeof(indices));
-    vao.bind();
-    vbo.bind();
-    ebo.bind();
+    /* init buffers& layouts */
+    VAO pirimitVao;
+    VBO pritimitVbo(vertices, sizeof(vertices));
+    EBO pirimitEbo(indices, sizeof(indices));
+    pirimitVao.bind();
+    pritimitVbo.bind();
+    pirimitEbo.bind();
 
     // layout
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+    pritimitVbo.setLayoutf(0, 3, 11, 0);
+    pritimitVbo.setLayoutf(1, 3, 11, 3);
+    pritimitVbo.setLayoutf(2, 3, 11, 6);
+    pritimitVbo.setLayoutf(3, 3, 11, 8);
 
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glEnableVertexAttribArray(3);
-
-    Shader shader("./res/vertexShader.shader", "./res/fragmentShader.shader");
-    shader.bind();
-    Texture texture("./res/brick.png", GL_TEXTURE0, 0);
-    texture.bind();
-    shader.setUniform1i("tex0", texture.unitID);
-
-    // camera position, center, up
-    Camera camera(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    // init shader
+    Shader pirimitShader("./res/vertexShader.shader", "./res/fragmentShader.shader");
+    pirimitShader.bind();
+    Texture brickTexture("./res/brick.png", GL_TEXTURE0, 0);
+    brickTexture.bind();
+    pirimitShader.setUniform1i("tex0", brickTexture.unitID);
 
     // set uniform
     glm::mat4 cameraMat = camera.getMatrix();
-    glm::mat4 model = glm::mat4(1.0f);
-    shader.setUniformMatrix4fv("cameraMat", glm::value_ptr(cameraMat));
-    shader.setUniformMatrix4fv("model", glm::value_ptr(model));
+    glm::mat4 pirimitModelMat = glm::mat4(1.0f);
+    pirimitShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(cameraMat));
+    pirimitShader.setUniformMatrix4fv("model", glm::value_ptr(pirimitModelMat));
 
-    shader.unbind();
-    vao.unbind();
+    pirimitShader.unbind();
+    pirimitVao.unbind();
 
-    // init plane
+    /* init plane */
     VAO planeVAO;
     VBO planeVBO(planeVertices, sizeof(planeVertices));
     EBO planeEBO(planeIndices, sizeof(planeIndices));
@@ -175,10 +177,8 @@ int main(void)
     planeVBO.bind();
     planeEBO.bind();
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+    planeVBO.setLayoutf(0, 3, 6, 0);
+    planeVBO.setLayoutf(1, 3, 6, 3);
 
     Shader planeShader("./res/planeVertex.shader", "./res/planeFragment.shader");
     planeShader.bind();
@@ -188,7 +188,7 @@ int main(void)
     planeShader.setUniformMatrix4fv("cameraMatrix", glm::value_ptr(cameraMat));
     planeShader.setUniform3fv("cameraPosition", glm::value_ptr(camera.position));
  
-    // init light source
+    /* init light source */
     VAO lightVAO;
     VBO lightVBO(lightVertices, sizeof(lightVertices));
     EBO lightEBO(lightIndices, sizeof(lightIndices));
@@ -196,8 +196,7 @@ int main(void)
     lightVBO.bind();
     lightEBO.bind();
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    lightVBO.setLayoutf(0, 3, 3, 0);
 
     Shader lightShader("./res/lightVertex.shader", "./res/lightFragment.shader");
     lightShader.bind();
@@ -213,22 +212,17 @@ int main(void)
     lightShader.unbind();
     lightVAO.unbind();
 
-    shader.bind();
-    shader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
-    shader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
-    shader.setUniform3fv("camPos", glm::value_ptr(camera.position));
-    shader.unbind();
+    /* init shaders uniform */
+    pirimitShader.bind();
+    pirimitShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
+    pirimitShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
+    pirimitShader.setUniform3fv("camPos", glm::value_ptr(camera.position));
+    pirimitShader.unbind();
 
     planeShader.bind();
     planeShader.setUniform3fv("lightPosition", glm::value_ptr(lightPosition));
     planeShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
-
-    UserInput userInput(window);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    glClearColor(0.02f, 0.02f, 0.02f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    planeShader.unbind();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -252,11 +246,11 @@ int main(void)
         glDrawElements(GL_TRIANGLES, 3 * 12, GL_UNSIGNED_INT, 0);
 
         // draw pirimit
-        vao.bind();
-        shader.bind();
-        shader.setUniform3fv("camPos", glm::value_ptr(camera.position));
-        shader.setUniform3fv("lightPos", glm::value_ptr(lPos));
-        shader.setUniformMatrix4fv("cameraMat", glm::value_ptr(cameraMat));
+        pirimitVao.bind();
+        pirimitShader.bind();
+        pirimitShader.setUniform3fv("camPos", glm::value_ptr(camera.position));
+        pirimitShader.setUniform3fv("lightPos", glm::value_ptr(lPos));
+        pirimitShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(cameraMat));
         glDrawElements(GL_TRIANGLES, 3 * 6, GL_UNSIGNED_INT, 0);
 
         // draw plane
