@@ -26,5 +26,5 @@ void main()
 	float specular = specAmount * specularLight;
 
 
-	FragColor = lightColor * texture(tex0, texCoord) * (diffuse + specular + ambient);
+	FragColor = lightColor * vec4(0.55f, 0.55f, 0.55f, 1.0f) * (diffuse + specular + ambient);
 }

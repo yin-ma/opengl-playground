@@ -9,15 +9,13 @@
 #include <iostream>
 
 Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures)
+    : vbo(vertices), ebo(indices)
 {
 	this->vertices = vertices;
 	this->indices = indices;
 	this->textures = textures;
-
+    
     vao.bind();
-
-    VBO vbo(vertices);
-    EBO ebo(indices);
 
     // layout
     vbo.bind();
@@ -31,6 +29,10 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, st
     vao.unbind();
     vbo.unbind();
     ebo.unbind();
+}
+
+Mesh::~Mesh()
+{
 }
 
 

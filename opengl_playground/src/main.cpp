@@ -105,7 +105,7 @@ int main(void)
     Camera camera(glm::vec3(0.0f, 1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     
     /* init shaders and textures */
-    Shader pirimitShader("./res/simple.vs", "./res/simple.fs");
+    Shader pirimitShader("./res/default.vs", "./res/default.fs");
     pirimitShader.bind();
     Texture textures[] =
     {
@@ -122,8 +122,6 @@ int main(void)
         pirimitShader.setUniform1i("tex" + std::to_string(i), tex[i].unitID);
     }
 
-    Mesh pirimitMesh(vert, ind, tex);
-
     // set uniform
     pirimitShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
     pirimitShader.setUniformMatrix4fv("model", glm::value_ptr(glm::mat4(1.0f)));
@@ -131,6 +129,14 @@ int main(void)
 
     /* load model */
     Model model("./res/model/nanosuit.obj");
+
+    glm::vec3 lightPosition(10.0f, 10.0f, 10.0f);
+    glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+    pirimitShader.bind();
+    pirimitShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
+    pirimitShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
+    pirimitShader.unbind();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -142,10 +148,11 @@ int main(void)
 
 
         /* draw call */
-        model.draw(pirimitShader, camera);
-
-        pirimitMesh.draw(pirimitShader, camera);
-        
+        pirimitShader.bind();
+        lightPosition = glm::rotate(lightPosition, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        pirimitShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
+        pirimitShader.unbind();
+        model.draw(pirimitShader, camera);        
 
         glfwSwapBuffers(window);
         glfwPollEvents();

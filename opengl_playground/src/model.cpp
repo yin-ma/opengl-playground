@@ -6,10 +6,19 @@
 #include "model.h"
 
 #include <iostream>
+#include <memory>
 
 Model::Model(const std::string& path)
 {
 	loadModel(path);
+}
+
+Model::~Model()
+{
+    for (size_t i = 0; i < meshes.size(); i++)
+    {
+        glDeleteVertexArrays(1, &(meshes[i].vao.vaoID));
+    }
 }
 
 void Model::draw(Shader& shader, Camera& camera)
@@ -41,7 +50,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     for (size_t i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(processMesh(mesh, scene));
+        processMesh(mesh, scene);
     }
 
     for (size_t i = 0; i < node->mNumChildren; i++)
@@ -51,7 +60,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 }
 
 
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+void Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -102,5 +111,20 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         }
     }
 
-    return Mesh(vertices, indices, textures);
+    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+    std::vector<Texture> temp;
+
+    for (size_t i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++)
+    {
+        aiString path;
+        material->GetTexture(aiTextureType_DIFFUSE, i, &path);
+        bool skip = false;
+
+        for (size_t j = 0; j < textureLoaded.size(); j++)
+        {
+
+        }
+    }
+
+    meshes.push_back(Mesh(vertices, indices, textures));
 }
