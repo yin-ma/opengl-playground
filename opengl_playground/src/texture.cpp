@@ -6,9 +6,10 @@
 #include <string>
 
 
-Texture::Texture(const std::string& filepath, unsigned int slot, unsigned int unit)
+Texture::Texture(const std::string& filepath, unsigned int unit)
 {
     unitID = unit;
+    unsigned int slot = GL_TEXTURE0 + unit;
     // convert image to byte
     int width, height, channel;
     const char* src = filepath.c_str();

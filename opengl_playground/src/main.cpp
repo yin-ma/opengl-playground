@@ -18,27 +18,27 @@
 
 float vertices[] =
 {
-    //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
-    -0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f, 	 0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-    -0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	 0.0f, 1.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-     0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	 1.0f, 1.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-     0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f,	 1.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-
-    -0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f, 	 0.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-    -0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	 1.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	 0.5f, 1.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-
-    -0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	 1.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-     0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	 0.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	 0.5f, 1.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-
-     0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	 0.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-     0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f,	 1.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	 0.5f, 1.0f,      0.8f, 0.5f,  0.0f, // Right side
-
-     0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f,	 1.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-    -0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f, 	 0.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	 0.5f, 1.0f,      0.0f, 0.5f,  0.8f  // Facing side
+    //     COORDINATES     /        COLORS          /    NORMALS       /      TexCoord        //
+    -0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f, 	  0.0f, -1.0f, 0.0f,        0.0f, 0.0f,// Bottom side
+    -0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, -1.0f, 0.0f,        0.0f, 1.0f,// Bottom side
+     0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, -1.0f, 0.0f,        1.0f, 1.0f,// Bottom side
+     0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, -1.0f, 0.0f,        1.0f, 0.0f,// Bottom side
+                                                                                
+    -0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f, 	 -0.8f, 0.5f,  0.0f,        0.0f, 0.0f,// Left Side
+    -0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	 -0.8f, 0.5f,  0.0f,        1.0f, 0.0f,// Left Side
+     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	 -0.8f, 0.5f,  0.0f,        0.5f, 1.0f,// Left Side
+                                                                                
+    -0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, 0.5f, -0.8f,        1.0f, 0.0f,// Non-facing side
+     0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, 0.5f, -0.8f,        0.0f, 0.0f,// Non-facing side
+     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	  0.0f, 0.5f, -0.8f,        0.5f, 1.0f,// Non-facing side
+                                                                                
+     0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	  0.8f, 0.5f,  0.0f,        0.0f, 0.0f,// Right side
+     0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f,	  0.8f, 0.5f,  0.0f,        1.0f, 0.0f,// Right side
+     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	  0.8f, 0.5f,  0.0f,        0.5f, 1.0f,// Right side
+                                                                                
+     0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, 0.5f,  0.8f,        1.0f, 0.0f,// Facing side
+    -0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f, 	  0.0f, 0.5f,  0.8f,        0.0f, 0.0f,// Facing side
+     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	  0.0f, 0.5f,  0.8f,        0.5f, 1.0f,// Facing side
 };
 
 unsigned int indices[] =
@@ -88,11 +88,20 @@ int main(void)
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+
     UserInput userInput(window);
 
-    // init camera(position, center, up)
+    /* init camera(position, center, up) */
     Camera camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     
+    /* init shaders and textures */
+    Shader pirimitShader("./res/simple.vs", "./res/simple.fs");
+    pirimitShader.bind();
+    Texture brickTexture("./res/brick.png", 0);
+    brickTexture.bind();
+    pirimitShader.setUniform1i("tex0", brickTexture.unitID);
+
+
     /* init buffers& layouts */
     VAO pirimitVao;
     VBO pritimitVbo(vertices, sizeof(vertices));
@@ -105,14 +114,8 @@ int main(void)
     pritimitVbo.setLayoutf(0, 3, 11, 0);
     pritimitVbo.setLayoutf(1, 3, 11, 3);
     pritimitVbo.setLayoutf(2, 3, 11, 6);
-    pritimitVbo.setLayoutf(3, 3, 11, 8);
+    pritimitVbo.setLayoutf(3, 2, 11, 9);
 
-    // init shader
-    Shader pirimitShader("./res/simple.vs", "./res/simple.fs");
-    pirimitShader.bind();
-    Texture brickTexture("./res/brick.png", GL_TEXTURE0, 0);
-    brickTexture.bind();
-    pirimitShader.setUniform1i("tex0", brickTexture.unitID);
 
     // set uniform
     glm::mat4 cameraMat = camera.getMatrix();
