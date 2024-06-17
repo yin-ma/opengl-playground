@@ -19,6 +19,11 @@ Model::~Model()
     {
         glDeleteVertexArrays(1, &(meshes[i].vao.vaoID));
     }
+
+    for (size_t i = 0; i < textureLoaded.size(); i++)
+    {
+        glDeleteTextures(1, &(textureLoaded[i].unitID));
+    }
 }
 
 void Model::draw(Shader& shader, Camera& camera)
@@ -50,7 +55,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     for (size_t i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        processMesh(mesh, scene);
+        meshes.push_back(processMesh(mesh, scene));
     }
 
     for (size_t i = 0; i < node->mNumChildren; i++)
@@ -60,11 +65,19 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 }
 
 
-void Model::processMesh(aiMesh* mesh, const aiScene* scene)
+Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+{
+    std::vector<Vertex> vertices = processVertices(mesh, scene);
+    std::vector<unsigned int> indices = processIndices(mesh, scene);
+    std::vector<Texture> textures = processTexture(mesh, scene);
+
+    return Mesh(vertices, indices, textures);
+}
+
+
+std::vector<Vertex> Model::processVertices(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
 
     for (size_t i = 0; i < mesh->mNumVertices; i++)
     {
@@ -86,6 +99,7 @@ void Model::processMesh(aiMesh* mesh, const aiScene* scene)
             vertex.normal = vector;
         }
 
+        // texture coordinate
         if (mesh->mTextureCoords[0])
         {
             glm::vec2 vec;
@@ -97,10 +111,15 @@ void Model::processMesh(aiMesh* mesh, const aiScene* scene)
         {
             vertex.texCoord = glm::vec2(0.0f, 0.0f);
         }
-        
+
         vertices.push_back(vertex);
     }
+    return vertices;
+}
 
+std::vector<unsigned int> Model::processIndices(aiMesh* mesh, const aiScene* scene)
+{
+    std::vector<unsigned int> indices;
     for (size_t i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
@@ -110,21 +129,37 @@ void Model::processMesh(aiMesh* mesh, const aiScene* scene)
             indices.push_back(face.mIndices[j]);
         }
     }
+    return indices;
+}
+
+std::vector<Texture> Model::processTexture(aiMesh* mesh, const aiScene* scene)
+{
+    std::vector<Texture> textures;
 
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-    std::vector<Texture> temp;
 
-    for (size_t i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++)
+    std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+    std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+    std::vector<Texture> ambientMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_ambient");
+    std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
+
+    textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+    textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+    textures.insert(textures.end(), ambientMaps.begin(), ambientMaps.end());
+    textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+
+    return textures;
+}
+
+std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+{
+    std::vector<Texture> textures;
+
+    for (size_t i = 0; i < mat->GetTextureCount(type); i++)
     {
-        aiString path;
-        material->GetTexture(aiTextureType_DIFFUSE, i, &path);
-        bool skip = false;
 
-        for (size_t j = 0; j < textureLoaded.size(); j++)
-        {
-
-        }
     }
 
-    meshes.push_back(Mesh(vertices, indices, textures));
+
+    return textures;
 }

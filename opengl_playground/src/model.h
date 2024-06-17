@@ -1,4 +1,4 @@
-#pragma once
+no#pragma once
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -21,5 +21,11 @@ public:
 private:
 	void loadModel(const std::string& path);
 	void processNode(aiNode* node, const aiScene* scene);
-	void processMesh(aiMesh* mesh, const aiScene* scene);
+	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+
+	std::vector<Vertex> processVertices(aiMesh* mesh, const aiScene* scene);
+	std::vector<unsigned int> processIndices(aiMesh* mesh, const aiScene* scene);
+	std::vector<Texture> processTexture(aiMesh* mesh, const aiScene* scene);
+
+	std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 };
