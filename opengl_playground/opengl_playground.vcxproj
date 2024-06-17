@@ -160,12 +160,12 @@
     <ClInclude Include="src\vao.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\fragmentShader.shader" />
-    <None Include="res\planeFragment.shader" />
-    <None Include="res\planeVertex.shader" />
-    <None Include="res\vertexShader.shader" />
-    <None Include="res\lightFragment.shader" />
-    <None Include="res\lightVertex.shader" />
+    <None Include="res\defaultShader.fs" />
+    <None Include="res\plane.fs" />
+    <None Include="res\plane.vs" />
+    <None Include="res\defaultShader.vs" />
+    <None Include="res\light.fs" />
+    <None Include="res\light.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
