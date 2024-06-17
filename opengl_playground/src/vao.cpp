@@ -11,7 +11,7 @@ VAO::VAO()
 
 VAO::~VAO()
 {
-	// due to model call, memory allocated makes wired thing happened...
+	// model class handle delete vao
 	/*glDeleteVertexArrays(1, &vaoID);*/
 }
 

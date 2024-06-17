@@ -8,7 +8,6 @@
 
 Texture::Texture(const std::string& filepath, unsigned int unit)
 {
-    unitID = unit;
     unsigned int slot = GL_TEXTURE0 + unit;
     // convert image to byte
     int width, height, channel;
@@ -21,9 +20,9 @@ Texture::Texture(const std::string& filepath, unsigned int unit)
         std::cout << "img fail to loaded" << std::endl;
     }
 
-    glGenTextures(1, &textureID);
+    glGenTextures(1, &unitID);
     glActiveTexture(slot);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    glBindTexture(GL_TEXTURE_2D, unitID);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
     glGenerateMipmap(GL_TEXTURE_2D);
@@ -38,7 +37,7 @@ Texture::Texture(const std::string& filepath, unsigned int unit)
 
 void Texture::bind()
 {
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    glBindTexture(GL_TEXTURE_2D, unitID);
 }
 
 void Texture::unbind()

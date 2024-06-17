@@ -4,62 +4,15 @@
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
 
-#include "mesh.h"
 #include "shader.h"
-#include "vao.h"
-#include "vbo.h"
-#include "ebo.h"
 #include "camera.h"
-#include "texture.h"
-
 #include "model.h"
-
-#include "vertex.h"
 #include "userinput.h"
 
 #include <vector>
 #include <iostream>
 #include <string>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
-
-Vertex vertices[] =
-{
-    //     COORDINATES     /        COLORS          /    NORMALS       /      TexCoord        //
-    Vertex{glm::vec3(-0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f), 	  glm::vec3(0.0f, -1.0f, 0.0f),        glm::vec2(0.0f, 0.0f)},// Bottom side
-    Vertex{glm::vec3(-0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, -1.0f, 0.0f),        glm::vec2(0.0f, 1.0f) },// Bottom side
-    Vertex{glm::vec3( 0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, -1.0f, 0.0f),        glm::vec2(1.0f, 1.0f) },// Bottom side
-    Vertex{glm::vec3( 0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, -1.0f, 0.0f),        glm::vec2(1.0f, 0.0f) },// Bottom side
-
-    Vertex{glm::vec3(-0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f), 	 glm::vec3(-0.8f, 0.5f,  0.0f),       glm::vec2( 0.0f, 0.0f) },// Left Side
-    Vertex{glm::vec3(-0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	 -glm::vec3(0.8f, 0.5f,  0.0f),        glm::vec2(1.0f, 0.0f) },// Left Side
-    Vertex{glm::vec3( 0.0f, 0.8f,  0.0f),     glm::vec3(0.83f, 0.05f, 0.05f),	 -glm::vec3(0.8f, 0.5f,  0.0f),        glm::vec2(0.5f, 1.0f) },// Left Side
-
-    Vertex{glm::vec3(-0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, 0.5f, -0.8f),        glm::vec2(1.0f, 0.0f) },// Non-facing side
-    Vertex{glm::vec3( 0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, 0.5f, -0.8f),        glm::vec2(0.0f, 0.0f) },// Non-facing side
-    Vertex{glm::vec3( 0.0f, 0.8f,  0.0f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, 0.5f, -0.8f),        glm::vec2(0.5f, 1.0f) },// Non-facing side
-
-    Vertex{glm::vec3( 0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.8f, 0.5f,  0.0f),        glm::vec2(0.0f, 0.0f) },// Right side
-    Vertex{glm::vec3( 0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.8f, 0.5f,  0.0f),        glm::vec2(1.0f, 0.0f) },// Right side
-    Vertex{glm::vec3( 0.0f, 0.8f,  0.0f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.8f, 0.5f,  0.0f),        glm::vec2(0.5f, 1.0f) },// Right side
-
-    Vertex{glm::vec3( 0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, 0.5f,  0.8f),        glm::vec2(1.0f, 0.0f) },// Facing side
-    Vertex{glm::vec3(-0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f), 	 glm::vec3( 0.0f, 0.5f,  0.8f),       glm::vec2( 0.0f, 0.0f) },// Facing side
-    Vertex{glm::vec3( 0.0f, 0.8f,  0.0f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, 0.5f,  0.8f),        glm::vec2(0.5f, 1.0f) },// Facing side
-};
-
-unsigned int indices[] =
-{
-    0, 1, 2, // Bottom side
-    0, 2, 3, // Bottom side
-    4, 6, 5, // Left side
-    7, 9, 8, // Non-facing side
-    10, 12, 11, // Right side
-    13, 15, 14 // Facing side
-};
 
 
 int main(void)
@@ -99,44 +52,27 @@ int main(void)
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
-    UserInput userInput(window);
-
     /* init camera(position, center, up) */
     Camera camera(glm::vec3(0.0f, 1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    
-    /* init shaders and textures */
-    Shader pirimitShader("./res/default.vs", "./res/default.fs");
-    pirimitShader.bind();
-    Texture textures[] =
-    {
-        Texture("./res/brick.png", 0)
-    };
+    UserInput userInput(window);
 
-    std::vector<Vertex> vert(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
-    std::vector<unsigned int> ind(indices, indices + sizeof(indices) / sizeof(unsigned int));
-    std::vector<Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
-
-    for (size_t i = 0; i < tex.size(); i++)
-    {
-        tex[i].bind();
-        pirimitShader.setUniform1i("tex" + std::to_string(i), tex[i].unitID);
-    }
-
-    // set uniform
-    pirimitShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
-    pirimitShader.setUniformMatrix4fv("model", glm::value_ptr(glm::mat4(1.0f)));
-    pirimitShader.unbind();
+    /* init shaders */
+    Shader defaultShader("./res/default.vs", "./res/default.fs");
+    defaultShader.bind();
+    defaultShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
+    defaultShader.setUniformMatrix4fv("model", glm::value_ptr(glm::mat4(1.0f)));
+    defaultShader.unbind();
 
     /* load model */
     Model model("./res/model/nanosuit.obj");
 
+    /* init light */
     glm::vec3 lightPosition(10.0f, 10.0f, 10.0f);
     glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-    pirimitShader.bind();
-    pirimitShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
-    pirimitShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
-    pirimitShader.unbind();
+    defaultShader.bind();
+    defaultShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
+    defaultShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
+    defaultShader.unbind();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -146,13 +82,12 @@ int main(void)
         userInput.handleInput(camera);
         userInput.handleMouse(window, camera);
 
-
         /* draw call */
-        pirimitShader.bind();
+        defaultShader.bind();
         lightPosition = glm::rotate(lightPosition, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        pirimitShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
-        pirimitShader.unbind();
-        model.draw(pirimitShader, camera);        
+        defaultShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
+        defaultShader.unbind();
+        model.draw(defaultShader, camera);        
 
         glfwSwapBuffers(window);
         glfwPollEvents();
