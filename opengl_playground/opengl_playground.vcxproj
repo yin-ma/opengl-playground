@@ -76,13 +76,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependency\GLFW\include;$(SolutionDir)dependency\glm\include;$(SolutionDir)dependency\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependency\GLFW\include;$(SolutionDir)dependency\glm\include;$(SolutionDir)dependency\GLEW\include;$(SolutionDir)dependency\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependency\GLFW\lib-vc2022;$(SolutionDir)dependency\GLEW\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;Shell32.lib;Gdi32.lib;User32.lib;opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependency\GLFW\lib-vc2022;$(SolutionDir)dependency\GLEW\lib\Release\x64;$(SolutionDir)dependency\GLEW\lib;$(SolutionDir)dependency\assimp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mt.lib;glew32s.lib;Shell32.lib;Gdi32.lib;User32.lib;opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -93,15 +93,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependency\GLFW\include;$(SolutionDir)dependency\glm\include;$(SolutionDir)dependency\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependency\GLFW\include;$(SolutionDir)dependency\glm\include;$(SolutionDir)dependency\GLEW\include;$(SolutionDir)dependency\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependency\GLFW\lib-vc2022;$(SolutionDir)dependency\GLEW\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;Shell32.lib;Gdi32.lib;User32.lib;opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependency\GLFW\lib-vc2022;$(SolutionDir)dependency\GLEW\lib\Release\x64;$(SolutionDir)dependency\GLEW\lib;$(SolutionDir)dependency\assimp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mt.lib;glew32s.lib;Shell32.lib;Gdi32.lib;User32.lib;opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -110,13 +110,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependency\GLFW\include;$(SolutionDir)dependency\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependency\GLFW\include;$(SolutionDir)dependency\glm\include;$(SolutionDir)dependency\GLEW\include;$(SolutionDir)dependency\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependency\GLFW\lib-vc2022;$(SolutionDir)dependency\GLEW\lib\Release\x64;$(SolutionDir)dependency\GLEW\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;Shell32.lib;Gdi32.lib;User32.lib;opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependency\GLFW\lib-vc2022;$(SolutionDir)dependency\GLEW\lib\Release\x64;$(SolutionDir)dependency\GLEW\lib;$(SolutionDir)dependency\assimp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mt.lib;glew32s.lib;Shell32.lib;Gdi32.lib;User32.lib;opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -127,15 +127,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependency\GLFW\include;$(SolutionDir)dependency\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependency\GLFW\include;$(SolutionDir)dependency\glm\include;$(SolutionDir)dependency\GLEW\include;$(SolutionDir)dependency\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependency\GLFW\lib-vc2022;$(SolutionDir)dependency\GLEW\lib\Release\x64;$(SolutionDir)dependency\GLEW\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;Shell32.lib;Gdi32.lib;User32.lib;opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependency\GLFW\lib-vc2022;$(SolutionDir)dependency\GLEW\lib\Release\x64;$(SolutionDir)dependency\GLEW\lib;$(SolutionDir)dependency\assimp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mt.lib;glew32s.lib;Shell32.lib;Gdi32.lib;User32.lib;opengl32.lib;glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -144,6 +144,7 @@
     <ClCompile Include="src\external\stb\stb_image.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mesh.cpp" />
+    <ClCompile Include="src\model.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\userinput.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="src\ebo.h" />
     <ClInclude Include="src\external\stb\stb_image.h" />
     <ClInclude Include="src\camera.h" />
+    <ClInclude Include="src\model.h" />
     <ClInclude Include="src\mesh.h" />
     <ClInclude Include="src\vertex.h" />
     <ClInclude Include="src\texture.h" />
@@ -163,10 +165,10 @@
     <ClInclude Include="src\vao.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\defaultShader.fs" />
+    <None Include="res\default.fs" />
     <None Include="res\plane.fs" />
     <None Include="res\plane.vs" />
-    <None Include="res\defaultShader.vs" />
+    <None Include="res\default.vs" />
     <None Include="res\light.fs" />
     <None Include="res\light.vs" />
   </ItemGroup>

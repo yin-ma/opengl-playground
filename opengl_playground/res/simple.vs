@@ -12,5 +12,4 @@ uniform mat4 cameraMat;
 void main()
 {
 	gl_Position = cameraMat * vec4(aPos, 1.0);
-	texCoord = aTexCoord;
 }

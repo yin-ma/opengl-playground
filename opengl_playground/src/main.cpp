@@ -12,12 +12,18 @@
 #include "camera.h"
 #include "texture.h"
 
+#include "model.h"
+
 #include "vertex.h"
 #include "userinput.h"
 
 #include <vector>
 #include <iostream>
 #include <string>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 
 Vertex vertices[] =
@@ -87,7 +93,7 @@ int main(void)
 
     // opengl config
     glViewport(0, 0, 600, 600);
-    glClearColor(0.02f, 0.02f, 0.02f, 1.0f);
+    glClearColor(0.05f, 0.05f, 0.05f, 0.05f);
     glEnable(GL_DEPTH_TEST);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -96,7 +102,7 @@ int main(void)
     UserInput userInput(window);
 
     /* init camera(position, center, up) */
-    Camera camera(glm::vec3(0.0f, 1.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    Camera camera(glm::vec3(0.0f, 1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     
     /* init shaders and textures */
     Shader pirimitShader("./res/simple.vs", "./res/simple.fs");
@@ -123,6 +129,9 @@ int main(void)
     pirimitShader.setUniformMatrix4fv("model", glm::value_ptr(glm::mat4(1.0f)));
     pirimitShader.unbind();
 
+    /* load model */
+    Model model("./res/model/nanosuit.obj");
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -133,7 +142,10 @@ int main(void)
 
 
         /* draw call */
+        model.draw(pirimitShader, camera);
+
         pirimitMesh.draw(pirimitShader, camera);
+        
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -42,6 +42,12 @@
     <ClCompile Include="src\userinput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.h">
@@ -68,13 +74,22 @@
     <ClInclude Include="src\userinput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\vertexShader.shader" />
-    <None Include="res\fragmentShader.shader" />
-    <None Include="res\lightVertex.shader" />
-    <None Include="res\lightFragment.shader" />
-    <None Include="res\planeVertex.shader" />
-    <None Include="res\planeFragment.shader" />
+    <None Include="res\default.fs" />
+    <None Include="res\plane.fs" />
+    <None Include="res\plane.vs" />
+    <None Include="res\default.vs" />
+    <None Include="res\light.fs" />
+    <None Include="res\light.vs" />
   </ItemGroup>
 </Project>
