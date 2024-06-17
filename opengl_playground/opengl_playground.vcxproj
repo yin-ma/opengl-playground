@@ -143,6 +143,7 @@
     <ClCompile Include="src\ebo.cpp" />
     <ClCompile Include="src\external\stb\stb_image.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mesh.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\userinput.cpp" />
@@ -153,6 +154,8 @@
     <ClInclude Include="src\ebo.h" />
     <ClInclude Include="src\external\stb\stb_image.h" />
     <ClInclude Include="src\camera.h" />
+    <ClInclude Include="src\mesh.h" />
+    <ClInclude Include="src\vertex.h" />
     <ClInclude Include="src\texture.h" />
     <ClInclude Include="src\userinput.h" />
     <ClInclude Include="src\vbo.h" />

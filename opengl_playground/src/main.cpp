@@ -4,6 +4,7 @@
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
 
+#include "mesh.h"
 #include "shader.h"
 #include "vao.h"
 #include "vbo.h"
@@ -11,34 +12,37 @@
 #include "camera.h"
 #include "texture.h"
 
+#include "vertex.h"
 #include "userinput.h"
 
+#include <vector>
 #include <iostream>
+#include <string>
 
 
-float vertices[] =
+Vertex vertices[] =
 {
     //     COORDINATES     /        COLORS          /    NORMALS       /      TexCoord        //
-    -0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f, 	  0.0f, -1.0f, 0.0f,        0.0f, 0.0f,// Bottom side
-    -0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, -1.0f, 0.0f,        0.0f, 1.0f,// Bottom side
-     0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, -1.0f, 0.0f,        1.0f, 1.0f,// Bottom side
-     0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, -1.0f, 0.0f,        1.0f, 0.0f,// Bottom side
-                                                                                
-    -0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f, 	 -0.8f, 0.5f,  0.0f,        0.0f, 0.0f,// Left Side
-    -0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	 -0.8f, 0.5f,  0.0f,        1.0f, 0.0f,// Left Side
-     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	 -0.8f, 0.5f,  0.0f,        0.5f, 1.0f,// Left Side
-                                                                                
-    -0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, 0.5f, -0.8f,        1.0f, 0.0f,// Non-facing side
-     0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, 0.5f, -0.8f,        0.0f, 0.0f,// Non-facing side
-     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	  0.0f, 0.5f, -0.8f,        0.5f, 1.0f,// Non-facing side
-                                                                                
-     0.5f, 0.0f, -0.5f,     0.83f, 0.05f, 0.05f,	  0.8f, 0.5f,  0.0f,        0.0f, 0.0f,// Right side
-     0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f,	  0.8f, 0.5f,  0.0f,        1.0f, 0.0f,// Right side
-     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	  0.8f, 0.5f,  0.0f,        0.5f, 1.0f,// Right side
-                                                                                
-     0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f,	  0.0f, 0.5f,  0.8f,        1.0f, 0.0f,// Facing side
-    -0.5f, 0.0f,  0.5f,     0.83f, 0.05f, 0.05f, 	  0.0f, 0.5f,  0.8f,        0.0f, 0.0f,// Facing side
-     0.0f, 0.8f,  0.0f,     0.83f, 0.05f, 0.05f,	  0.0f, 0.5f,  0.8f,        0.5f, 1.0f,// Facing side
+    Vertex{glm::vec3(-0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f), 	  glm::vec3(0.0f, -1.0f, 0.0f),        glm::vec2(0.0f, 0.0f)},// Bottom side
+    Vertex{glm::vec3(-0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, -1.0f, 0.0f),        glm::vec2(0.0f, 1.0f) },// Bottom side
+    Vertex{glm::vec3( 0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, -1.0f, 0.0f),        glm::vec2(1.0f, 1.0f) },// Bottom side
+    Vertex{glm::vec3( 0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, -1.0f, 0.0f),        glm::vec2(1.0f, 0.0f) },// Bottom side
+
+    Vertex{glm::vec3(-0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f), 	 glm::vec3(-0.8f, 0.5f,  0.0f),       glm::vec2( 0.0f, 0.0f) },// Left Side
+    Vertex{glm::vec3(-0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	 -glm::vec3(0.8f, 0.5f,  0.0f),        glm::vec2(1.0f, 0.0f) },// Left Side
+    Vertex{glm::vec3( 0.0f, 0.8f,  0.0f),     glm::vec3(0.83f, 0.05f, 0.05f),	 -glm::vec3(0.8f, 0.5f,  0.0f),        glm::vec2(0.5f, 1.0f) },// Left Side
+
+    Vertex{glm::vec3(-0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, 0.5f, -0.8f),        glm::vec2(1.0f, 0.0f) },// Non-facing side
+    Vertex{glm::vec3( 0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, 0.5f, -0.8f),        glm::vec2(0.0f, 0.0f) },// Non-facing side
+    Vertex{glm::vec3( 0.0f, 0.8f,  0.0f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, 0.5f, -0.8f),        glm::vec2(0.5f, 1.0f) },// Non-facing side
+
+    Vertex{glm::vec3( 0.5f, 0.0f, -0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.8f, 0.5f,  0.0f),        glm::vec2(0.0f, 0.0f) },// Right side
+    Vertex{glm::vec3( 0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.8f, 0.5f,  0.0f),        glm::vec2(1.0f, 0.0f) },// Right side
+    Vertex{glm::vec3( 0.0f, 0.8f,  0.0f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.8f, 0.5f,  0.0f),        glm::vec2(0.5f, 1.0f) },// Right side
+
+    Vertex{glm::vec3( 0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, 0.5f,  0.8f),        glm::vec2(1.0f, 0.0f) },// Facing side
+    Vertex{glm::vec3(-0.5f, 0.0f,  0.5f),     glm::vec3(0.83f, 0.05f, 0.05f), 	 glm::vec3( 0.0f, 0.5f,  0.8f),       glm::vec2( 0.0f, 0.0f) },// Facing side
+    Vertex{glm::vec3( 0.0f, 0.8f,  0.0f),     glm::vec3(0.83f, 0.05f, 0.05f),	  glm::vec3(0.0f, 0.5f,  0.8f),        glm::vec2(0.5f, 1.0f) },// Facing side
 };
 
 unsigned int indices[] =
@@ -97,34 +101,27 @@ int main(void)
     /* init shaders and textures */
     Shader pirimitShader("./res/simple.vs", "./res/simple.fs");
     pirimitShader.bind();
-    Texture brickTexture("./res/brick.png", 0);
-    brickTexture.bind();
-    pirimitShader.setUniform1i("tex0", brickTexture.unitID);
+    Texture textures[] =
+    {
+        Texture("./res/brick.png", 0)
+    };
 
+    std::vector<Vertex> vert(vertices, vertices + sizeof(vertices) / sizeof(Vertex));
+    std::vector<unsigned int> ind(indices, indices + sizeof(indices) / sizeof(unsigned int));
+    std::vector<Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
 
-    /* init buffers& layouts */
-    VAO pirimitVao;
-    VBO pritimitVbo(vertices, sizeof(vertices));
-    EBO pirimitEbo(indices, sizeof(indices));
-    pirimitVao.bind();
-    pritimitVbo.bind();
-    pirimitEbo.bind();
+    for (size_t i = 0; i < tex.size(); i++)
+    {
+        tex[i].bind();
+        pirimitShader.setUniform1i("tex" + std::to_string(i), tex[i].unitID);
+    }
 
-    // layout
-    pritimitVbo.setLayoutf(0, 3, 11, 0);
-    pritimitVbo.setLayoutf(1, 3, 11, 3);
-    pritimitVbo.setLayoutf(2, 3, 11, 6);
-    pritimitVbo.setLayoutf(3, 2, 11, 9);
-
+    Mesh pirimitMesh(vert, ind, tex);
 
     // set uniform
-    glm::mat4 cameraMat = camera.getMatrix();
-    glm::mat4 pirimitModelMat = glm::mat4(1.0f);
-    pirimitShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(cameraMat));
-    pirimitShader.setUniformMatrix4fv("model", glm::value_ptr(pirimitModelMat));
-
+    pirimitShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
+    pirimitShader.setUniformMatrix4fv("model", glm::value_ptr(glm::mat4(1.0f)));
     pirimitShader.unbind();
-    pirimitVao.unbind();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -134,15 +131,9 @@ int main(void)
         userInput.handleInput(camera);
         userInput.handleMouse(window, camera);
 
-        cameraMat = camera.getMatrix();
 
         /* draw call */
-
-        // draw pirimit
-        pirimitVao.bind();
-        pirimitShader.bind();
-        pirimitShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(cameraMat));
-        glDrawElements(GL_TRIANGLES, 3 * 6, GL_UNSIGNED_INT, 0);
+        pirimitMesh.draw(pirimitShader, camera);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

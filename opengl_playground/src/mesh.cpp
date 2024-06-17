@@ -1,36 +1,40 @@
+#include<glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
+#include<glm/gtc/type_ptr.hpp>
+
 #include "mesh.h"
 #include "vbo.h"
 #include "ebo.h"
 
 Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures)
-	: vertices(vertices), indices(indices), textures(textures)
+    :vbo(vertices), ebo(indices)
 {
-	vao.bind();
-	VBO vbo(vertices);
-	EBO ebo(indices);
+	this->vertices = vertices;
+	this->indices = indices;
+	this->textures = textures;
 
-	vbo.setLayoutf(0, 3, sizeof(Vertex), 0);
-	vbo.setLayoutf(1, 3, sizeof(Vertex), 3);
-	vbo.setLayoutf(2, 3, sizeof(Vertex), 6);
-	vbo.setLayoutf(3, 2, sizeof(Vertex), 9);
+    vao.bind();
+    vbo.bind();
+    ebo.bind();
 
-	ebo.unbind();
-	vbo.unbind();
-	vao.unbind();
+    // layout
+    vbo.setLayoutf(0, 3, sizeof(Vertex), 0);
+    vbo.setLayoutf(1, 3, sizeof(Vertex), 3);
+    vbo.setLayoutf(2, 3, sizeof(Vertex), 6);
+    vbo.setLayoutf(3, 2, sizeof(Vertex), 9);
+
+    vao.unbind();
+    vbo.unbind();
+    ebo.unbind();
 }
 
 
 void Mesh::draw(Shader& shader, Camera& camera)
 {
-	vao.bind();
-	shader.bind();
+    vao.bind();
+    shader.bind();
 
-	for (size_t i = 0; i < textures.size(); i++)
-	{
-		textures[i].bind();
-		shader.setUniform1i("tex0", textures[i].unitID);
-	}
+    shader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
 
-	shader.setUniform4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
-	glDrawElements(GL_TRIANGLES, 1, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }

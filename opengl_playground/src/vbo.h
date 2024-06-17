@@ -1,13 +1,17 @@
 #pragma once
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <vector>
+
+#include "vertex.h"
+
 
 class VBO
 {
 public:
 	unsigned int vboID;
 
-	VBO(const float* vertices, unsigned int size);
+	VBO(std::vector<Vertex>& vertices);
 	~VBO();
 
 	void bind();
