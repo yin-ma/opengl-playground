@@ -61,21 +61,19 @@ int main(void)
 
     /* init shaders */
     Shader defaultShader("./res/default.vs", "./res/default.fs");
-    defaultShader.bind();
-    defaultShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
-    defaultShader.setUniformMatrix4fv("model", glm::value_ptr(glm::mat4(1.0f)));
-    defaultShader.unbind();
+    Shader lightShader("./res/light.vs", "./res/light.fs");
 
     /* load model */
     Model model("./res/model/nanosuit.obj");
-
-    /* init light */
-    Shader lightShader("./res/light.vs", "./res/light.fs");
     PointLight light(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
     lightShader.bind();
     lightShader.setUniform4fv("lightColor", glm::value_ptr(light.color));
     lightShader.unbind();
+
     defaultShader.bind();
+    defaultShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
+    defaultShader.setUniformMatrix4fv("model", glm::value_ptr(glm::mat4(1.0f)));
     defaultShader.setUniform3fv("lightPos", glm::value_ptr(light.position));
     defaultShader.setUniform4fv("lightColor", glm::value_ptr(light.color));
     defaultShader.unbind();
@@ -92,9 +90,9 @@ int main(void)
         defaultShader.bind();
         light.position = glm::rotate(light.position, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         defaultShader.setUniform3fv("lightPos", glm::value_ptr(light.position));
-        defaultShader.unbind();
         model.draw(defaultShader, camera);
         light.draw(lightShader, camera);
+        defaultShader.unbind();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
