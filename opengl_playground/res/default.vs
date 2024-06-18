@@ -17,6 +17,6 @@ void main()
 	position = vec3(model * vec4(aPos, 1.0));
 	gl_Position = cameraMat * vec4(position, 1.0);
 	color = aColor;
-	texCoord = aTex;
 	normal = aNormal;
+	texCoord = aTex;
 };

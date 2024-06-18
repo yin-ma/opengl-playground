@@ -18,6 +18,7 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, st
     vao.bind();
 
     // layout
+    // position, color, normal, texture
     vbo.bind();
     vbo.setLayoutf(0, 3, sizeof(Vertex), 0);
     vbo.setLayoutf(1, 3, sizeof(Vertex), 3);
@@ -40,8 +41,26 @@ void Mesh::draw(Shader& shader, Camera& camera)
 {
 
     vao.bind();
-
     shader.bind();
+
+    unsigned int numDiffuse = 1;
+    unsigned int numSpecular = 1;
+
+    for (unsigned int i = 0; i < textures.size(); i++)
+    {
+        glActiveTexture(GL_TEXTURE0 + i);
+        if (textures[i].type == "texture_diffuse")
+        {
+            shader.setUniform1i("texture_diffuse", textures[i].unitID);
+            numDiffuse += 1;
+        }
+        else if (textures[i].type == "texture_specular")
+        {
+            shader.setUniform1i("texture_specular" + std::to_string(numSpecular), textures[i].unitID);
+            numSpecular += 1;
+        }
+        textures[i].bind();
+    }
 
     shader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -49,5 +68,6 @@ void Mesh::draw(Shader& shader, Camera& camera)
     glBindVertexArray(0);
 
     vao.unbind();
+    shader.unbind();
 
 }

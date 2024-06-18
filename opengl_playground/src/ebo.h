@@ -7,6 +7,8 @@ class EBO
 {
 public:
 	unsigned int eboID;
+
+	EBO(unsigned int* indices, unsigned int size);
 	EBO(std::vector<unsigned int>& indices);
 	~EBO();
 	void bind();

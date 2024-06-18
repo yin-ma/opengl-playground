@@ -2,6 +2,13 @@
 #include "GL/glew.h"
 #include <GLFW/glfw3.h>
 
+VBO::VBO(float* vertices, unsigned int size)
+{
+	glGenBuffers(1, &vboID);
+	glBindBuffer(GL_ARRAY_BUFFER, vboID);
+	glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+}
+
 VBO::VBO(std::vector<Vertex>& vertices)
 {
 	glGenBuffers(1, &vboID);

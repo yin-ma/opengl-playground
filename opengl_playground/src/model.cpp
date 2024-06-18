@@ -2,6 +2,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "external/stb/stb_image.h"
+
 #include "texture.h"
 #include "model.h"
 
@@ -42,12 +44,12 @@ void Model::loadModel(const std::string& path)
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
         std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
+        return;
     }
     
-    else
-    {
-        processNode(scene->mRootNode, scene);
-    }
+    directory = path.substr(0, path.find_last_of('/'));
+
+    processNode(scene->mRootNode, scene);
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene)
@@ -139,13 +141,12 @@ std::vector<Texture> Model::processTexture(aiMesh* mesh, const aiScene* scene)
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
     std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-    std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-    std::vector<Texture> ambientMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_ambient");
-    std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
-
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+    std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+    std::vector<Texture> ambientMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_ambient");
     textures.insert(textures.end(), ambientMaps.begin(), ambientMaps.end());
+    std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
     return textures;
@@ -157,9 +158,30 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 
     for (size_t i = 0; i < mat->GetTextureCount(type); i++)
     {
+        aiString path;
+        mat->GetTexture(type, i, &path);
+        bool skip = false;
 
+        for (size_t j = 0; j < textureLoaded.size(); j++)
+        {
+            if (std::strcmp(textureLoaded[j].path.data(), path.C_Str()) == 0)
+            {
+                //textures.push_back(textureLoaded[j]);
+                skip = true; 
+                break;
+            }
+        }
+
+        if (!skip)
+        {
+            Texture texture(directory + '/' + path.C_Str(), textureCount);
+            texture.type = typeName;
+            texture.path = path.C_Str();
+            textures.push_back(texture);
+            textureLoaded.push_back(texture);
+            textureCount += 1;
+        }
     }
-
 
     return textures;
 }

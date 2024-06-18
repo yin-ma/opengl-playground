@@ -7,7 +7,10 @@
 #include "shader.h"
 #include "camera.h"
 #include "model.h"
+#include "vertex.h"
 #include "userinput.h"
+
+#include "pointLight.cpp"
 
 #include <vector>
 #include <iostream>
@@ -67,11 +70,14 @@ int main(void)
     Model model("./res/model/nanosuit.obj");
 
     /* init light */
-    glm::vec3 lightPosition(10.0f, 10.0f, 10.0f);
-    glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
+    Shader lightShader("./res/light.vs", "./res/light.fs");
+    PointLight light(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    lightShader.bind();
+    lightShader.setUniform4fv("lightColor", glm::value_ptr(light.color));
+    lightShader.unbind();
     defaultShader.bind();
-    defaultShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
-    defaultShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
+    defaultShader.setUniform3fv("lightPos", glm::value_ptr(light.position));
+    defaultShader.setUniform4fv("lightColor", glm::value_ptr(light.color));
     defaultShader.unbind();
 
     /* Loop until the user closes the window */
@@ -84,10 +90,11 @@ int main(void)
 
         /* draw call */
         defaultShader.bind();
-        lightPosition = glm::rotate(lightPosition, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        defaultShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
+        light.position = glm::rotate(light.position, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        defaultShader.setUniform3fv("lightPos", glm::value_ptr(light.position));
         defaultShader.unbind();
-        model.draw(defaultShader, camera);        
+        model.draw(defaultShader, camera);
+        light.draw(lightShader, camera);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

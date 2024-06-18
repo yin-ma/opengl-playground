@@ -6,13 +6,15 @@
 #include <string>
 
 
+Texture::Texture() {}
+
 Texture::Texture(const std::string& filepath, unsigned int unit)
 {
     unsigned int slot = GL_TEXTURE0 + unit;
     // convert image to byte
     int width, height, channel;
     const char* src = filepath.c_str();
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(false);
     unsigned char* bytes = stbi_load(src, &width, &height, &channel, 0);
 
     if (!bytes)
@@ -24,9 +26,23 @@ Texture::Texture(const std::string& filepath, unsigned int unit)
     glActiveTexture(slot);
     glBindTexture(GL_TEXTURE_2D, unitID);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+    if (channel == 4)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+    }
+    else if (channel == 3)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
+    }
+    else if (channel == 1)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, bytes);
+    }
+    else
+    {
+        std::cout << "texture input has wrong channel number" << std::endl;
+    }
     glGenerateMipmap(GL_TEXTURE_2D);
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

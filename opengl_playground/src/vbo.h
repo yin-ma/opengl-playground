@@ -11,6 +11,8 @@ class VBO
 public:
 	unsigned int vboID;
 
+	VBO(float* vertices, unsigned int size);
+
 	VBO(std::vector<Vertex>& vertices);
 	~VBO();
 

@@ -1,4 +1,4 @@
-no#pragma once
+#pragma once
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -13,6 +13,9 @@ class Model
 public:
 	std::vector<Mesh> meshes;
 	std::vector<Texture> textureLoaded;
+	std::string directory;
+
+	unsigned int textureCount = 1;
 
 	Model(const std::string& path);
 	~Model();
