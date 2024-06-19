@@ -43,8 +43,8 @@ void Mesh::draw(Shader& shader, Camera& camera)
     vao.bind();
     shader.bind();
 
-    unsigned int numDiffuse = 1;
-    unsigned int numSpecular = 1;
+    unsigned int numDiffuse = 0;
+    unsigned int numSpecular = 0;
 
     for (unsigned int i = 0; i < textures.size(); i++)
     {

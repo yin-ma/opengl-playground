@@ -6,7 +6,7 @@
 class Texture
 {
 public:
-	unsigned int unitID;
+	unsigned int unitID = 0;
 	std::string type;
 	std::string path;
 

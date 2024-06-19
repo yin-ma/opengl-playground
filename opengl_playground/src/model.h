@@ -15,7 +15,7 @@ public:
 	std::vector<Texture> textureLoaded;
 	std::string directory;
 
-	unsigned int textureCount = 1;
+	unsigned int textureCount = 0;
 
 	Model(const std::string& path);
 	~Model();

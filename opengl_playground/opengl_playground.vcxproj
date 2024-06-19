@@ -167,6 +167,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\default.fs" />
+    <None Include="res\framebuffer.fs" />
+    <None Include="res\framebuffer.vs" />
+    <None Include="res\orgFramebuffer.fs" />
+    <None Include="res\orgFramebuffer.vs" />
     <None Include="res\plane.fs" />
     <None Include="res\plane.vs" />
     <None Include="res\default.vs" />

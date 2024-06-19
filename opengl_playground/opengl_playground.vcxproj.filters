@@ -94,5 +94,9 @@
     <None Include="res\default.vs" />
     <None Include="res\light.fs" />
     <None Include="res\light.vs" />
+    <None Include="res\framebuffer.vs" />
+    <None Include="res\framebuffer.fs" />
+    <None Include="res\orgFramebuffer.fs" />
+    <None Include="res\orgFramebuffer.vs" />
   </ItemGroup>
 </Project>
