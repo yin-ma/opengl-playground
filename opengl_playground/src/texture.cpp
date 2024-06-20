@@ -11,6 +11,7 @@ Texture::Texture() {}
 Texture::Texture(const std::string& filepath, unsigned int unit)
 {
     unsigned int slot = GL_TEXTURE0 + unit;
+
     // convert image to byte
     int width, height, channel;
     const char* src = filepath.c_str();
@@ -23,7 +24,6 @@ Texture::Texture(const std::string& filepath, unsigned int unit)
     }
 
     glGenTextures(1, &unitID);
-    glActiveTexture(slot);
     glBindTexture(GL_TEXTURE_2D, unitID);
 
     if (channel == 4)
@@ -48,6 +48,8 @@ Texture::Texture(const std::string& filepath, unsigned int unit)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     stbi_image_free(bytes);
+
+    glActiveTexture(slot);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 

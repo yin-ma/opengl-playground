@@ -47,7 +47,6 @@ void Mesh::draw(Shader& shader, Camera& camera)
 
     for (unsigned int i = 0; i < textures.size(); i++)
     {
-        glActiveTexture(GL_TEXTURE0 + i);
         textures[i].bind();
         if (textures[i].type == "texture_diffuse")
         {

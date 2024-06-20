@@ -98,6 +98,7 @@ int main(void)
     Shader framebufferProgram("./res/framebuffer.vs", "./res/framebuffer.fs");
     Shader orgFramebufferProgram("./res/orgFramebuffer.vs", "./res/orgFramebuffer.fs");
     
+    /* rect display */
     unsigned int rectVAO, rectVBO;
     glGenVertexArrays(1, &rectVAO);
     glGenBuffers(1, &rectVBO);
@@ -108,10 +109,12 @@ int main(void)
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glBindVertexArray(0);
 
     unsigned int FBO;
     glGenFramebuffers(1, &FBO);
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+
     unsigned int RBO;
     glGenRenderbuffers(1, &RBO);
     glBindRenderbuffer(GL_RENDERBUFFER, RBO);
@@ -128,9 +131,9 @@ int main(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
-
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glEnable(GL_DEPTH_TEST);
-
 
 
     /* Loop until the user closes the window */
@@ -152,27 +155,20 @@ int main(void)
         defaultShader.unbind();
 
         // Draw the framebuffer fisrt half rect
+        glActiveTexture(GL_TEXTURE0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         framebufferProgram.bind();
-        framebufferProgram.setUniform1i("screenTexture", 1);
         glBindVertexArray(rectVAO);
         glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
         glBindTexture(GL_TEXTURE_2D, framebufferTexture);
         glDrawArrays(GL_TRIANGLES, 0, 3);
-        glBindVertexArray(0);
         framebufferProgram.unbind();
 
         // Draw the framebuffer second half rect
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         orgFramebufferProgram.bind();
-        orgFramebufferProgram.setUniform1i("screenTexture", 1);
-        glBindVertexArray(rectVAO);
-        glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
-        glBindTexture(GL_TEXTURE_2D, framebufferTexture);
         glDrawArrays(GL_TRIANGLES, 3, 6);
         glBindVertexArray(0);
         orgFramebufferProgram.unbind();
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();
