@@ -48,8 +48,14 @@ Texture::Texture(const std::string& filepath, unsigned int unit)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     stbi_image_free(bytes);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+
+Texture::~Texture()
+{
+    //glDeleteTextures(1, &unitID);
+}
 
 void Texture::bind()
 {

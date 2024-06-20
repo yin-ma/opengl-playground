@@ -1,16 +1,16 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include<glm/glm.hpp>
-#include<glm/gtc/matrix_transform.hpp>
-#include<glm/gtc/type_ptr.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
-#include "shader.h"
+#include "pointLight.cpp"
+
 #include "camera.h"
+#include "shader.h"
 #include "model.h"
 #include "vertex.h"
 #include "userinput.h"
-
-#include "pointLight.cpp"
 
 #include <vector>
 #include <iostream>
@@ -37,15 +37,15 @@ int main(void)
     GLFWwindow* window;
     if (!glfwInit()) return -1;
 
-    // set opengl version
+    /* set opengl version */
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(600, 600, "Opengl Playground", NULL, NULL);
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Opengl Playground", NULL, NULL);
     if (!window)
     {
-        std::cout << "fail to create glfw window" << std::endl;
+        std::cout << "Fail to create glfw window" << std::endl;
         glfwTerminate();
         return -1;
     }
@@ -55,14 +55,14 @@ int main(void)
 
     if (glewInit() != GLEW_OK)
     {
-        std::cout << "fail to init glew" << std::endl;
+        std::cout << "Fail to initialize glew" << std::endl;
         return -1;
     }
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
-    // opengl config
-    glViewport(0, 0, 600, 600);
+    /* opengl config */
+    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     glClearColor(0.05f, 0.05f, 0.05f, 0.05f);
     glEnable(GL_DEPTH_TEST);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -71,7 +71,7 @@ int main(void)
 
     /* init camera(position, center, up) */
     Camera camera(glm::vec3(0.0f, 1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    UserInput userInput(window);
+    UserInput userInput(window, &camera);
 
     /* init shaders */
     Shader defaultShader("./res/default.vs", "./res/default.fs");
@@ -79,6 +79,8 @@ int main(void)
 
     /* load model */
     Model model("./res/model/nanosuit.obj");
+
+    /* setup light(position, color) */
     PointLight light(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     lightShader.bind();
@@ -92,8 +94,7 @@ int main(void)
     defaultShader.setUniform4fv("lightColor", glm::value_ptr(light.color));
     defaultShader.unbind();
 
-
-    /* framebuffer */
+    /* setup framebuffer */
     Shader framebufferProgram("./res/framebuffer.vs", "./res/framebuffer.fs");
     Shader orgFramebufferProgram("./res/orgFramebuffer.vs", "./res/orgFramebuffer.fs");
     
@@ -103,10 +104,10 @@ int main(void)
     glBindVertexArray(rectVAO);
     glBindBuffer(GL_ARRAY_BUFFER, rectVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(rectangleVertices), &rectangleVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     unsigned int FBO;
     glGenFramebuffers(1, &FBO);
@@ -114,14 +115,14 @@ int main(void)
     unsigned int RBO;
     glGenRenderbuffers(1, &RBO);
     glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 600, 600);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
 
     // Create Framebuffer Texture
     unsigned int framebufferTexture;
     glGenTextures(1, &framebufferTexture);
     glBindTexture(GL_TEXTURE_2D, framebufferTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 600, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -135,10 +136,8 @@ int main(void)
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        userInput.handleInput(camera);
-        userInput.handleMouse(window, camera);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        userInput.handleInput();
+        userInput.handleMouse();
 
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -146,7 +145,7 @@ int main(void)
 
         /* draw call */
         defaultShader.bind();
-        light.position = glm::rotate(light.position, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        light.position = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(light.position, 1.0f));
         defaultShader.setUniform3fv("lightPos", glm::value_ptr(light.position));
         model.draw(defaultShader, camera);
         light.draw(lightShader, camera);

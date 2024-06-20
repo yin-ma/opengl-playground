@@ -5,14 +5,12 @@
 VAO::VAO()
 {
 	glGenVertexArrays(1, &vaoID);
-	glBindVertexArray(vaoID);
-
 }
 
 VAO::~VAO()
 {
 	// model class handle delete vao
-	/*glDeleteVertexArrays(1, &vaoID);*/
+	//glDeleteVertexArrays(1, &vaoID);
 }
 
 void VAO::bind()

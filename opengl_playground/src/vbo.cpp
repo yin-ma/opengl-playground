@@ -31,7 +31,7 @@ void VBO::unbind()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VBO::setLayoutf(unsigned int location, int size, size_t stride, int index)
+void VBO::setLayoutf(unsigned int location, int size, unsigned int stride, int index)
 {
 	glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, stride, (void*)(index * sizeof(float)));
 	glEnableVertexAttribArray(location);

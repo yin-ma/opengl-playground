@@ -7,10 +7,11 @@
 class UserInput
 {
 public:
-	UserInput(GLFWwindow* window);
+	Camera* m_camera;
+	UserInput(GLFWwindow* window, Camera* camera);
 
-	void handleInput(Camera& camera);
-	void handleMouse(GLFWwindow* window, Camera& camera);
+	void handleInput();
+	void handleMouse();
 private:
 	GLFWwindow* m_window;
 	float xLast = 300.0f;

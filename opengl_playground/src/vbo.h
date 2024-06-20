@@ -18,5 +18,5 @@ public:
 
 	void bind();
 	void unbind();
-	void setLayoutf(unsigned int location, int size, size_t stride, int index);
+	void setLayoutf(unsigned int location, int size, unsigned int stride, int index);
 };

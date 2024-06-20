@@ -11,6 +11,7 @@ public:
 	std::string path;
 
 	Texture();
+	~Texture();
 	Texture(const std::string& filepath, unsigned int unit);
 
 	void bind();

@@ -84,7 +84,7 @@ std::vector<Vertex> Model::processVertices(aiMesh* mesh, const aiScene* scene)
     for (size_t i = 0; i < mesh->mNumVertices; i++)
     {
         Vertex vertex;
-        glm::vec3 vector;
+        glm::vec3 vector(0.0f, 0.0f, 0.0f);
 
         // position
         vector.x = mesh->mVertices[i].x;
@@ -104,7 +104,7 @@ std::vector<Vertex> Model::processVertices(aiMesh* mesh, const aiScene* scene)
         // texture coordinate
         if (mesh->mTextureCoords[0])
         {
-            glm::vec2 vec;
+            glm::vec2 vec(0.0f, 0.0f);
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
             vertex.texCoord = vec;

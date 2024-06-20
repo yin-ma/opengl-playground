@@ -1,18 +1,21 @@
 #include "camera.h"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <string>
 #include <iostream>
-#include "glm/gtx/string_cast.hpp"
 
 Camera::Camera(glm::vec3 pos, glm::vec3 ctr, glm::vec3 u)
 	: position(pos), center(ctr), up(u)
 {
-	speed = 0.1f;
 }
 	
 glm::mat4 Camera::getMatrix()
 {
 	glm::mat4 view = glm::lookAt(position, position + center, up);
-	glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f);
+	glm::mat4 proj = glm::perspective(glm::radians(fov), aspectRatio, near, far);
 
 	return proj * view;
 }
@@ -64,5 +67,13 @@ void Camera::rotate(float yawAngle, float pitchAngle)
 
 	glm::vec3 right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f)));
 	up = glm::normalize(glm::cross(right, front));
+}
 
+void Camera::zoom(float offset)
+{
+	fov -= (float)offset;
+	if (fov < 1.0f)
+		fov = 1.0f;
+	if (fov > 89.0f)
+		fov = 89.0f;
 }

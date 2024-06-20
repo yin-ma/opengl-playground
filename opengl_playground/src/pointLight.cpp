@@ -22,7 +22,6 @@ public:
     unsigned int indices[3 * 12];
     VAO vao;
 
-
     PointLight(glm::vec3 pos, glm::vec3 clr)
         : position(pos), 
             color(clr), 
@@ -93,8 +92,8 @@ public:
         EBO ebo(indices, sizeof(indices));
 
         vbo.bind();
-        vbo.setLayoutf(0, 3, 3 * sizeof(float), 0);
         ebo.bind();
+        vbo.setLayoutf(0, 3, 3 * sizeof(float), 0);
 
         vao.unbind();
         vbo.unbind();
@@ -105,11 +104,12 @@ public:
     {
         vao.bind();
         shader.bind();
-        glm::mat4 model = glm::translate(position);
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
         shader.setUniformMatrix4fv("model", glm::value_ptr(model));
         shader.setUniformMatrix4fv("cameraMatrix", glm::value_ptr(camera.getMatrix()));
 
         glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+        vao.unbind();
         shader.unbind();
     }
 };

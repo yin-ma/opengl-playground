@@ -176,6 +176,8 @@
     <None Include="res\default.vs" />
     <None Include="res\light.fs" />
     <None Include="res\light.vs" />
+    <None Include="res\simple.fs" />
+    <None Include="res\simple.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

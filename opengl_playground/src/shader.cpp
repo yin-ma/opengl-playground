@@ -13,8 +13,8 @@ Shader::Shader(const std::string& vertexShaderFilePath, const std::string& fragm
     char infoLog[512];
 
     // setup vertex shader
-    std::string vertexShaderSource = parseShader(vertexShaderFilePath).c_str();
-    std::string fragmentShaderSource = parseShader(fragmentShaderFilePath).c_str();
+    std::string vertexShaderSource = parseShader(vertexShaderFilePath);
+    std::string fragmentShaderSource = parseShader(fragmentShaderFilePath);
 
     const char* vertexSrc = vertexShaderSource.c_str();
     const char* fragmentSrc = fragmentShaderSource.c_str();
@@ -27,7 +27,7 @@ Shader::Shader(const std::string& vertexShaderFilePath, const std::string& fragm
     if (!sucess)
     {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "vertex shader compile error :\n" << infoLog << std::endl;
+        std::cout << "Vertex shader compile error :\n" << infoLog << std::endl;
     }
 
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -38,7 +38,7 @@ Shader::Shader(const std::string& vertexShaderFilePath, const std::string& fragm
     if (!sucess)
     {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "fragment shader compile error :\n" << infoLog << std::endl;
+        std::cout << "Fragment shader compile error :\n" << infoLog << std::endl;
     }
 
     // link shaders
@@ -50,7 +50,7 @@ Shader::Shader(const std::string& vertexShaderFilePath, const std::string& fragm
     if (!sucess)
     {
         glGetProgramInfoLog(shaderID, 512, NULL, infoLog);
-        std::cout << "program linking error :\n" << infoLog << std::endl;
+        std::cout << "Program linking error :\n" << infoLog << std::endl;
     }
 
     glDeleteShader(vertexShader);
