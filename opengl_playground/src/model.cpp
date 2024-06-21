@@ -69,10 +69,11 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
+    
     std::vector<Vertex> vertices = processVertices(mesh, scene);
     std::vector<unsigned int> indices = processIndices(mesh, scene);
     std::vector<Texture> textures = processTexture(mesh, scene);
-
+    
     return Mesh(vertices, indices, textures);
 }
 

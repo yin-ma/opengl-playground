@@ -10,7 +10,6 @@ Texture::Texture() {}
 
 Texture::Texture(const std::string& filepath, unsigned int unit)
 {
-    unsigned int slot = GL_TEXTURE0 + unit;
 
     // convert image to byte
     int width, height, channel;
@@ -42,17 +41,15 @@ Texture::Texture(const std::string& filepath, unsigned int unit)
     {
         std::cout << "texture input has wrong channel number" << std::endl;
     }
-    glGenerateMipmap(GL_TEXTURE_2D);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(bytes);
-
-    glActiveTexture(slot);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, unitID);
 }
-
+    
 
 Texture::~Texture()
 {
