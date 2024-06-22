@@ -171,6 +171,8 @@
     <None Include="res\default.fs" />
     <None Include="res\framebuffer.fs" />
     <None Include="res\framebuffer.vs" />
+    <None Include="res\instancing.fs" />
+    <None Include="res\instancing.vs" />
     <None Include="res\orgFramebuffer.fs" />
     <None Include="res\orgFramebuffer.vs" />
     <None Include="res\plane.fs" />
@@ -180,6 +182,8 @@
     <None Include="res\light.vs" />
     <None Include="res\simple.fs" />
     <None Include="res\simple.vs" />
+    <None Include="res\simplePhong.fs" />
+    <None Include="res\simplePhong.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

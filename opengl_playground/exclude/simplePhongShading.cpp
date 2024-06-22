@@ -146,7 +146,7 @@ int main(void)
     glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
-    
+
     /* plane setup */
     unsigned int planeVAO;
     glGenVertexArrays(1, &planeVAO);

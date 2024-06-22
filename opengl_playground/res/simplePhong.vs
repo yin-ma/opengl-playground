@@ -13,8 +13,8 @@ uniform mat4 cameraMat;
 
 void main()
 {
-	position = aPos;
-	normal = aNormal;
+	position = vec3(model * vec4(aPos, 1.0));
+	normal = vec3(model * vec4(aNormal, 0.0));
 	texCoord = aTexCoord;
 	gl_Position = cameraMat * model * vec4(aPos, 1.0);
 }

@@ -106,5 +106,9 @@
     <None Include="res\orgFramebuffer.vs" />
     <None Include="res\simple.fs" />
     <None Include="res\simple.vs" />
+    <None Include="res\instancing.vs" />
+    <None Include="res\instancing.fs" />
+    <None Include="res\simplePhong.vs" />
+    <None Include="res\simplePhong.fs" />
   </ItemGroup>
 </Project>
