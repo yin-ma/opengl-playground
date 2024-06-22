@@ -31,5 +31,5 @@ void main()
 	vec4 diffuseTerm = lightColor * texture(texture_diffuse0, texCoord) * diffuse;
 	vec4 ambientTerm = lightColor * texture(texture_diffuse0, texCoord) * ambient;
 	vec4 speculaTerm = lightColor * texture(texture_specular0, texCoord) * specular;
-	FragColor = diffuseTerm + ambientTerm + speculaTerm;
+	FragColor = texture(texture_diffuse0, texCoord);
 }

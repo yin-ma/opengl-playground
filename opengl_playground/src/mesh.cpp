@@ -26,7 +26,6 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, st
     vbo.setLayoutf(2, 3, sizeof(Vertex), 6);
     vbo.setLayoutf(3, 2, sizeof(Vertex), 9);
 
-
     vao.unbind();
     vbo.unbind();
     ebo.unbind();
@@ -49,12 +48,12 @@ void Mesh::draw(Shader& shader, Camera& camera)
     {
         if (textures[i].type == "texture_diffuse")
         {
-            shader.setUniform1i("texture_diffuse" + std::to_string(numDiffuse), textures[i].unitID);
+            shader.setUniform1i("texture_diffuse" + std::to_string(numDiffuse), textures[i].slot);
             numDiffuse += 1;
         }
         else if (textures[i].type == "texture_specular")
         {
-            shader.setUniform1i("texture_specular" + std::to_string(numSpecular), textures[i].unitID);
+            shader.setUniform1i("texture_specular" + std::to_string(numSpecular), textures[i].slot);
             numSpecular += 1;
         }
     }

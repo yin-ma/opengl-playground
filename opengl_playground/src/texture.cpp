@@ -8,7 +8,6 @@
 #include <string>
 
 
-Texture::Texture() {}
 
 Texture::Texture(const std::string& filepath, unsigned int unit)
 {
@@ -20,7 +19,7 @@ Texture::Texture(const std::string& filepath, unsigned int unit)
     {
         std::cout << "img fail to loaded" << std::endl;
     }
-
+    slot = GL_TEXTURE0 + unit;
     glActiveTexture(GL_TEXTURE0 + unit);
     glGenTextures(1, &unitID);
     glBindTexture(GL_TEXTURE_2D, unitID);

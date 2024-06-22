@@ -157,13 +157,13 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 {
     std::vector<Texture> textures;
 
-    for (size_t i = 0; i < mat->GetTextureCount(type); i++)
+    for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString path;
         mat->GetTexture(type, i, &path);
         bool skip = false;
 
-        for (size_t j = 0; j < textureLoaded.size(); j++)
+        for (unsigned int j = 0; j < textureLoaded.size(); j++)
         {
             if (std::strcmp(textureLoaded[j].path.data(), path.C_Str()) == 0)
             {

@@ -9,6 +9,8 @@
 
 #include "pointLight.cpp"
 
+#include "vao.h"
+#include "vbo.h"
 #include "camera.h"
 #include "shader.h"
 #include "texture.h"
@@ -129,62 +131,35 @@ int main(void)
     Shader simplePhongShader("./res/simplePhong.vs", "./res/simplePhong.fs");
 
     /* cube setup */
-    unsigned int cubeVAO;
-    glGenVertexArrays(1, &cubeVAO);
-    glBindVertexArray(cubeVAO);
-
-    unsigned int cubeVBO;
-    glGenBuffers(1, &cubeVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    glBindVertexArray(0);
+    VAO cubeVAO;
+    VBO cubeVBO(cubeVertices, sizeof(cubeVertices));
+    cubeVAO.bind();
+    cubeVBO.bind();
+    cubeVBO.setLayoutf(0, 3, 8 * sizeof(float), 0);
+    cubeVBO.setLayoutf(1, 3, 8 * sizeof(float), 3);
+    cubeVBO.setLayoutf(2, 2, 8 * sizeof(float), 6);
+    cubeVAO.unbind();
 
     /* plane setup */
-    unsigned int planeVAO;
-    glGenVertexArrays(1, &planeVAO);
-    glBindVertexArray(planeVAO);
-
-    unsigned int planeVBO;
-    glGenBuffers(1, &planeVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), planeVertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    glBindVertexArray(0);
-
+    VAO planeVAO;
+    VBO planeVBO(planeVertices, sizeof(planeVertices));
+    planeVAO.bind();
+    planeVBO.bind();
+    planeVBO.setLayoutf(0, 3, 8 * sizeof(float), 0);
+    planeVBO.setLayoutf(1, 3, 8 * sizeof(float), 3);
+    planeVBO.setLayoutf(2, 2, 8 * sizeof(float), 6);
+    planeVAO.unbind();
 
     /* light setup */
     glm::vec3 lightPosition(0.0f, 15.0f, 0.0f);
     glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-    unsigned int lightVAO;
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-
-    unsigned int lightVBO;
-    glGenBuffers(1, &lightVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindVertexArray(0);
-
+    VAO lightVAO;
+    VBO lightVBO(cubeVertices, sizeof(cubeVertices));
+    lightVAO.bind();
+    lightVBO.bind();
+    lightVBO.setLayoutf(0, 3, 8 * sizeof(float), 0);
+    lightVAO.unbind();
 
     /* setup texture */
     Texture cubeTexture("./res/wood.png", 0);
@@ -247,16 +222,15 @@ int main(void)
         lightShader.setUniformMatrix4fv("model", glm::value_ptr(lightModelMats));
         lightShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
 
-        glBindVertexArray(lightVAO);
+        lightVAO.bind();
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
+        lightVAO.unbind();
         lightShader.unbind();
-
 
 
         // draw cube
         simplePhongShader.bind();
-        glBindVertexArray(cubeVAO);
+        cubeVAO.bind();
         for (int i = 0; i < numCube; i++)
         {
             simplePhongShader.setUniform1i("tex", 1);
@@ -267,16 +241,13 @@ int main(void)
             simplePhongShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
-
-        glBindVertexArray(0);
+        cubeVAO.unbind();
         simplePhongShader.unbind();
-
 
         // draw cube
         simplePhongShader.bind();
-        glBindVertexArray(cubeVAO);
+        cubeVAO.bind();
         glm::mat4 centerModelMat(1.0f);
-
         simplePhongShader.setUniform1i("tex", 1);
         simplePhongShader.setUniform3fv("cameraPos", glm::value_ptr(camera.position));
         simplePhongShader.setUniform3fv("lightPos", glm::value_ptr(currLightPosition));
@@ -284,10 +255,8 @@ int main(void)
         simplePhongShader.setUniformMatrix4fv("model", glm::value_ptr(centerModelMat));
         simplePhongShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        glBindVertexArray(0);
+        cubeVAO.unbind();
         simplePhongShader.unbind();
-
 
         // draw plane
         glm::mat4 planeModelMat(1.0f);
@@ -298,14 +267,13 @@ int main(void)
         simplePhongShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
         simplePhongShader.setUniformMatrix4fv("model", glm::value_ptr(planeModelMat));
         simplePhongShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
-        glBindVertexArray(planeVAO);
+        planeVAO.bind();
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
+        planeVAO.unbind();
         simplePhongShader.unbind();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
-
     }
 
     glfwDestroyWindow(window);
