@@ -7,6 +7,8 @@
 
 #include "pointLight.cpp"
 
+#include "vao.h"
+#include "vbo.h"
 #include "camera.h"
 #include "shader.h"
 #include "model.h"
@@ -21,6 +23,50 @@
 const int SCR_WIDTH = 600;
 const int SCR_HEIGHT = 600;
 
+float cubeVertices[] = {
+    // back face
+    -1.0f, -1.0f, -1.0f,  // bottom-left
+     1.0f,  1.0f, -1.0f,  // top-right
+     1.0f, -1.0f, -1.0f,  // bottom-right         
+     1.0f,  1.0f, -1.0f,  // top-right
+    -1.0f, -1.0f, -1.0f,  // bottom-left
+    -1.0f,  1.0f, -1.0f,  // top-left
+    // front face         
+    -1.0f, -1.0f,  1.0f,  // bottom-left
+     1.0f, -1.0f,  1.0f,  // bottom-right
+     1.0f,  1.0f,  1.0f,  // top-right
+     1.0f,  1.0f,  1.0f,  // top-right
+    -1.0f,  1.0f,  1.0f,  // top-left
+    -1.0f, -1.0f,  1.0f,  // bottom-left
+    // left face          
+    -1.0f,  1.0f,  1.0f,  // top-right
+    -1.0f,  1.0f, -1.0f,  // top-left
+    -1.0f, -1.0f, -1.0f,  // bottom-left
+    -1.0f, -1.0f, -1.0f,  // bottom-left
+    -1.0f, -1.0f,  1.0f,  // bottom-right
+    -1.0f,  1.0f,  1.0f,  // top-right
+    // right face         
+     1.0f,  1.0f,  1.0f,  // top-left
+     1.0f, -1.0f, -1.0f,  // bottom-right
+     1.0f,  1.0f, -1.0f,  // top-right         
+     1.0f, -1.0f, -1.0f,  // bottom-right
+     1.0f,  1.0f,  1.0f,  // top-left
+     1.0f, -1.0f,  1.0f,  // bottom-left     
+     // bottom face       
+     -1.0f, -1.0f, -1.0f,  // top-right
+      1.0f, -1.0f, -1.0f,  // top-left
+      1.0f, -1.0f,  1.0f,  // bottom-left
+      1.0f, -1.0f,  1.0f,  // bottom-left
+     -1.0f, -1.0f,  1.0f,  // bottom-right
+     -1.0f, -1.0f, -1.0f,  // top-right
+     // top face          
+     -1.0f,  1.0f, -1.0f,  // top-left
+      1.0f,  1.0f , 1.0f,  // bottom-right
+      1.0f,  1.0f, -1.0f,  // top-right     
+      1.0f,  1.0f,  1.0f,  // bottom-right
+     -1.0f,  1.0f, -1.0f,  // top-left
+     -1.0f,  1.0f,  1.0f,  // bottom-left        
+};
 
 int main(void)
 {
@@ -70,19 +116,21 @@ int main(void)
     Model planet("./res/planet/planet.obj");
     Model rock("./res/rock/rock.obj");
 
-
     /* setup light(position, color) */
-    PointLight light(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-
-    lightShader.bind();
-    lightShader.setUniform4fv("lightColor", glm::value_ptr(light.color));
-    lightShader.unbind();
+    glm::vec3 lightPosition = glm::vec3(0.0f, 20.0f, 20.0f);
+    glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    VAO lightVAO;
+    VBO lightVBO(cubeVertices, sizeof(cubeVertices));
+    lightVAO.bind();
+    lightVBO.bind();
+    lightVBO.setLayoutf(0, 3, 3 * sizeof(float), 0);
+    lightVAO.unbind();
 
     defaultShader.bind();
     defaultShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
     defaultShader.setUniformMatrix4fv("model", glm::value_ptr(glm::mat4(1.0f)));
-    defaultShader.setUniform3fv("lightPos", glm::value_ptr(light.position));
-    defaultShader.setUniform4fv("lightColor", glm::value_ptr(light.color));
+    defaultShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
+    defaultShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
     defaultShader.unbind();
 
     glEnable(GL_DEPTH_TEST);
@@ -97,21 +145,20 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         /* draw call */
-        defaultShader.bind();
-        light.position = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(light.position, 1.0f));
-        defaultShader.setUniform3fv("lightPos", glm::value_ptr(light.position));
-        light.draw(lightShader, camera);
+        lightShader.bind();
+        lightVAO.bind();
+        lightShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
+        lightShader.setUniformMatrix4fv("model", glm::value_ptr(glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(0.3f, 0.3f, 0.3f)), lightPosition)));
+        lightShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        lightShader.unbind();
+        lightVAO.unbind();
 
-        defaultShader.bind();
-        defaultShader.setUniformMatrix4fv("model", glm::value_ptr(glm::mat4(1.0f)));
         planet.draw(defaultShader, camera);
-        defaultShader.setUniformMatrix4fv("model", glm::value_ptr(glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 0.0f, 0.0f))));
         rock.draw(defaultShader, camera);
-        defaultShader.unbind();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
-
     }
 
     glfwDestroyWindow(window);

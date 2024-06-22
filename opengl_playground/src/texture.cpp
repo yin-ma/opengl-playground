@@ -19,8 +19,7 @@ Texture::Texture(const std::string& filepath, unsigned int unit)
     {
         std::cout << "img fail to loaded" << std::endl;
     }
-    slot = GL_TEXTURE0 + unit;
-    glActiveTexture(GL_TEXTURE0 + unit);
+
     glGenTextures(1, &unitID);
     glBindTexture(GL_TEXTURE_2D, unitID);
 
@@ -47,10 +46,22 @@ Texture::Texture(const std::string& filepath, unsigned int unit)
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(bytes);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
     
 
 Texture::~Texture()
 {
     //glDeleteTextures(1, &unitID);
+}
+
+
+void Texture::bind()
+{
+    glBindTexture(GL_TEXTURE_2D, unitID);
+}
+
+void Texture::unbind()
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
 }

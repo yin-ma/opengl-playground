@@ -28,47 +28,47 @@ public:
             vertices 
             {
                 // positions         
-                -0.3f, -0.3f, -0.3f,
-                0.3f, -0.3f, -0.3f,
-                0.3f,  0.3f, -0.3f,
-                0.3f,  0.3f, -0.3f,
-                -0.3f,  0.3f, -0.3f,
-                -0.3f, -0.3f, -0.3f,
+                -11.1f, -11.1f, -11.1f,
+                11.1f, -11.1f, -11.1f,
+                11.1f,  11.1f, -11.1f,
+                11.1f,  11.1f, -11.1f,
+                -11.1f,  11.1f, -11.1f,
+                -11.1f, -11.1f, -11.1f,
 
-                -0.3f, -0.3f,  0.3f,
-                0.3f, -0.3f,  0.3f,
-                0.3f,  0.3f,  0.3f,
-                0.3f,  0.3f,  0.3f,
-                -0.3f,  0.3f,  0.3f,
-                -0.3f, -0.3f,  0.3f,
+                -11.1f, -11.1f,  11.1f,
+                11.1f, -11.1f,  11.1f,
+                11.1f,  11.1f,  11.1f,
+                11.1f,  11.1f,  11.1f,
+                -11.1f,  11.1f,  11.1f,
+                -11.1f, -11.1f,  11.1f,
 
-                -0.3f,  0.3f,  0.3f,
-                -0.3f,  0.3f, -0.3f,
-                -0.3f, -0.3f, -0.3f,
-                -0.3f, -0.3f, -0.3f,
-                -0.3f, -0.3f,  0.3f,
-                -0.3f,  0.3f,  0.3f,
+                -11.1f,  11.1f,  11.1f,
+                -11.1f,  11.1f, -11.1f,
+                -11.1f, -11.1f, -11.1f,
+                -11.1f, -11.1f, -11.1f,
+                -11.1f, -11.1f,  11.1f,
+                -11.1f,  11.1f,  11.1f,
 
-                0.3f,  0.3f,  0.3f,
-                0.3f,  0.3f, -0.3f,
-                0.3f, -0.3f, -0.3f,
-                0.3f, -0.3f, -0.3f,
-                0.3f, -0.3f,  0.3f,
-                0.3f,  0.3f,  0.3f,
+                11.1f,  11.1f,  11.1f,
+                11.1f,  11.1f, -11.1f,
+                11.1f, -11.1f, -11.1f,
+                11.1f, -11.1f, -11.1f,
+                11.1f, -11.1f,  11.1f,
+                11.1f,  11.1f,  11.1f,
 
-                -0.3f, -0.3f, -0.3f,
-                0.3f, -0.3f, -0.3f,
-                0.3f, -0.3f,  0.3f,
-                0.3f, -0.3f,  0.3f,
-                -0.3f, -0.3f,  0.3f,
-                -0.3f, -0.3f, -0.3f,
+                -11.1f, -11.1f, -11.1f,
+                11.1f, -11.1f, -11.1f,
+                11.1f, -11.1f,  11.1f,
+                11.1f, -11.1f,  11.1f,
+                -11.1f, -11.1f,  11.1f,
+                -11.1f, -11.1f, -11.1f,
 
-                -0.3f,  0.3f, -0.3f,
-                0.3f,  0.3f, -0.3f,
-                0.3f,  0.3f,  0.3f,
-                0.3f,  0.3f,  0.3f,
-                -0.3f,  0.3f,  0.3f,
-                -0.3f,  0.3f, -0.3f,
+                -11.1f,  11.1f, -11.1f,
+                11.1f,  11.1f, -11.1f,
+                11.1f,  11.1f,  11.1f,
+                11.1f,  11.1f,  11.1f,
+                -11.1f,  11.1f,  11.1f,
+                -11.1f,  11.1f, -11.1f,
             },
             indices
             {
@@ -96,8 +96,6 @@ public:
         vbo.setLayoutf(0, 3, 3 * sizeof(float), 0);
 
         vao.unbind();
-        vbo.unbind();
-        ebo.unbind();
     }
 
     void draw(Shader& shader, Camera& camera)
@@ -107,7 +105,6 @@ public:
         glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
         shader.setUniformMatrix4fv("model", glm::value_ptr(model));
         shader.setUniformMatrix4fv("cameraMatrix", glm::value_ptr(camera.getMatrix()));
-
         glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
         vao.unbind();
         shader.unbind();

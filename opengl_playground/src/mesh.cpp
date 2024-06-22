@@ -48,14 +48,16 @@ void Mesh::draw(Shader& shader, Camera& camera)
     {
         if (textures[i].type == "texture_diffuse")
         {
-            shader.setUniform1i("texture_diffuse" + std::to_string(numDiffuse), textures[i].slot);
+            shader.setUniform1i("texture_diffuse" + std::to_string(numDiffuse), i);
             numDiffuse += 1;
         }
         else if (textures[i].type == "texture_specular")
         {
-            shader.setUniform1i("texture_specular" + std::to_string(numSpecular), textures[i].slot);
+            shader.setUniform1i("texture_specular" + std::to_string(numSpecular), i);
             numSpecular += 1;
         }
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, textures[i].unitID);
     }
 
     shader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
