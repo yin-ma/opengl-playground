@@ -20,6 +20,8 @@ public:
 	Camera(glm::vec3 position, glm::vec3 center, glm::vec3 up);
 
 	glm::mat4 getMatrix();
+	glm::mat4 getProjectionMat();
+	glm::mat4 getViewMat();
 	void move(const std::string& direction);
 	void rotate(float yawAngle, float pitchAngle);
 	void zoom(float offset);

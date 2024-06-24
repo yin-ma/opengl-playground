@@ -110,5 +110,15 @@
     <None Include="res\instancing.fs" />
     <None Include="res\simplePhong.vs" />
     <None Include="res\simplePhong.fs" />
+    <None Include="res\inversion.fs" />
+    <None Include="res\inversion.vs" />
+    <None Include="res\grayscale.fs" />
+    <None Include="res\grayscale.vs" />
+    <None Include="res\convolution.vs" />
+    <None Include="res\convolution.fs" />
+    <None Include="res\simpleDepth.fs" />
+    <None Include="res\simpleDepth.vs" />
+    <None Include="res\shadowMapping.vs" />
+    <None Include="res\shadowMapping.fs" />
   </ItemGroup>
 </Project>

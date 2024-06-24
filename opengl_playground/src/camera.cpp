@@ -14,10 +14,20 @@ Camera::Camera(glm::vec3 pos, glm::vec3 ctr, glm::vec3 u)
 	
 glm::mat4 Camera::getMatrix()
 {
-	glm::mat4 view = glm::lookAt(position, position + center, up);
-	glm::mat4 proj = glm::perspective(glm::radians(fov), aspectRatio, near, far);
+	glm::mat4 view = getViewMat();
+	glm::mat4 proj = getProjectionMat();
 
 	return proj * view;
+}
+
+glm::mat4 Camera::getProjectionMat()
+{
+	return glm::perspective(glm::radians(fov), aspectRatio, near, far);
+}
+
+glm::mat4 Camera::getViewMat()
+{
+	return glm::lookAt(position, position + center, up);
 }
 
 void Camera::move(const std::string& dir)

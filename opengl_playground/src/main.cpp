@@ -4,6 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/string_cast.hpp"
+#include "external/stb/stb_image.h"
+#include <assimp/Importer.hpp>
 
 #include "pointLight.cpp"
 
@@ -11,7 +13,7 @@
 #include "vbo.h"
 #include "camera.h"
 #include "shader.h"
-#include "model.h"
+#include "texture.h"
 #include "vertex.h"
 #include "userinput.h"
 
@@ -23,50 +25,62 @@
 const int SCR_WIDTH = 600;
 const int SCR_HEIGHT = 600;
 
+float planeVertices[] = {
+    // positions            // normals         // texcoords
+     25.0f, 0.0f,  25.0f,  0.0f, 1.0f, 0.0f,  2.0f,  0.0f,
+    -25.0f, 0.0f,  25.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
+    -25.0f, 0.0f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 2.0f,
+
+     25.0f, 0.0f,  25.0f,  0.0f, 1.0f, 0.0f,  2.0f,  0.0f,
+    -25.0f, 0.0f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 2.0f,
+     25.0f, 0.0f, -25.0f,  0.0f, 1.0f, 0.0f,  2.0f, 2.0f
+};
+
 float cubeVertices[] = {
     // back face
-    -1.0f, -1.0f, -1.0f,  // bottom-left
-     1.0f,  1.0f, -1.0f,  // top-right
-     1.0f, -1.0f, -1.0f,  // bottom-right         
-     1.0f,  1.0f, -1.0f,  // top-right
-    -1.0f, -1.0f, -1.0f,  // bottom-left
-    -1.0f,  1.0f, -1.0f,  // top-left
-    // front face         
-    -1.0f, -1.0f,  1.0f,  // bottom-left
-     1.0f, -1.0f,  1.0f,  // bottom-right
-     1.0f,  1.0f,  1.0f,  // top-right
-     1.0f,  1.0f,  1.0f,  // top-right
-    -1.0f,  1.0f,  1.0f,  // top-left
-    -1.0f, -1.0f,  1.0f,  // bottom-left
-    // left face          
-    -1.0f,  1.0f,  1.0f,  // top-right
-    -1.0f,  1.0f, -1.0f,  // top-left
-    -1.0f, -1.0f, -1.0f,  // bottom-left
-    -1.0f, -1.0f, -1.0f,  // bottom-left
-    -1.0f, -1.0f,  1.0f,  // bottom-right
-    -1.0f,  1.0f,  1.0f,  // top-right
-    // right face         
-     1.0f,  1.0f,  1.0f,  // top-left
-     1.0f, -1.0f, -1.0f,  // bottom-right
-     1.0f,  1.0f, -1.0f,  // top-right         
-     1.0f, -1.0f, -1.0f,  // bottom-right
-     1.0f,  1.0f,  1.0f,  // top-left
-     1.0f, -1.0f,  1.0f,  // bottom-left     
-     // bottom face       
-     -1.0f, -1.0f, -1.0f,  // top-right
-      1.0f, -1.0f, -1.0f,  // top-left
-      1.0f, -1.0f,  1.0f,  // bottom-left
-      1.0f, -1.0f,  1.0f,  // bottom-left
-     -1.0f, -1.0f,  1.0f,  // bottom-right
-     -1.0f, -1.0f, -1.0f,  // top-right
-     // top face          
-     -1.0f,  1.0f, -1.0f,  // top-left
-      1.0f,  1.0f , 1.0f,  // bottom-right
-      1.0f,  1.0f, -1.0f,  // top-right     
-      1.0f,  1.0f,  1.0f,  // bottom-right
-     -1.0f,  1.0f, -1.0f,  // top-left
-     -1.0f,  1.0f,  1.0f,  // bottom-left        
+    -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+     1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+     1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+     1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+    -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+    -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+    // front face
+    -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+     1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+     1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+     1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+    -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+    -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+    // left face
+    -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+    -1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+    -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+    -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+    -1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+    -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+    // right face
+     1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+     1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+     1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
+     1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+     1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+     1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
+     // bottom face
+     -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+      1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+      1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+      1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+     -1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+     -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+     // top face
+     -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+      1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+      1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
+      1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+     -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+     -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
 };
+
 
 int main(void)
 {
@@ -102,38 +116,83 @@ int main(void)
     glClearColor(0.05f, 0.05f, 0.05f, 0.05f);
     glEnable(GL_DEPTH_TEST);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glEnable(GL_DEPTH_TEST);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 
     /* init camera(position, center, up) */
     Camera camera(glm::vec3(0.0f, 1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     UserInput userInput(window, &camera);
 
     /* init shaders */
-    Shader defaultShader("./res/default.vs", "./res/default.fs");
     Shader lightShader("./res/light.vs", "./res/light.fs");
+    Shader simpleDepthShader("./res/simpleDepth.vs", "./res/simpleDepth.fs");
+    Shader shadowMappingShader("./res/shadowMapping.vs", "./res/shadowMapping.fs");
 
-    /* load model */
-    Model planet("./res/planet/planet.obj");
-    Model rock("./res/rock/rock.obj");
+    /* cube setup */
+    VAO cubeVAO;
+    VBO cubeVBO(cubeVertices, sizeof(cubeVertices));
+    cubeVAO.bind();
+    cubeVBO.bind();
+    cubeVBO.setLayoutf(0, 3, 8 * sizeof(float), 0);
+    cubeVBO.setLayoutf(1, 3, 8 * sizeof(float), 3);
+    cubeVBO.setLayoutf(2, 2, 8 * sizeof(float), 6);
+    cubeVAO.unbind();
 
-    /* setup light(position, color) */
-    glm::vec3 lightPosition = glm::vec3(0.0f, 20.0f, 20.0f);
-    glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    /* plane setup */
+    VAO planeVAO;
+    VBO planeVBO(planeVertices, sizeof(planeVertices));
+    planeVAO.bind();
+    planeVBO.bind();
+    planeVBO.setLayoutf(0, 3, 8 * sizeof(float), 0);
+    planeVBO.setLayoutf(1, 3, 8 * sizeof(float), 3);
+    planeVBO.setLayoutf(2, 2, 8 * sizeof(float), 6);
+    planeVAO.unbind();
+
+    /* light setup */
+    glm::vec3 lightPosition(0.0f, 15.0f, 0.0f);
+    glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
+    float lightAngle = 0.0f;
+
     VAO lightVAO;
     VBO lightVBO(cubeVertices, sizeof(cubeVertices));
     lightVAO.bind();
     lightVBO.bind();
-    lightVBO.setLayoutf(0, 3, 3 * sizeof(float), 0);
+    lightVBO.setLayoutf(0, 3, 8 * sizeof(float), 0);
     lightVAO.unbind();
 
-    defaultShader.bind();
-    defaultShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
-    defaultShader.setUniformMatrix4fv("model", glm::value_ptr(glm::mat4(1.0f)));
-    defaultShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
-    defaultShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
-    defaultShader.unbind();
+    /* setup texture */
+    Texture cubeTexture("./res/wood.png", 0);
+    Texture planeTexture("./res/brick.png", 1);
 
-    glEnable(GL_DEPTH_TEST);
+    /* setup uniform */
+    lightShader.bind();
+    lightShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
+    lightShader.unbind();
+
+
+    /* framebuffers */
+    unsigned int SHADOW_WIDTH = 1024;
+    unsigned int SHADOW_HEIGHT = 1024;
+
+    unsigned int depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+
+    unsigned int depthMap;
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
 
     /* Loop until the user closes the window */
@@ -142,20 +201,110 @@ int main(void)
         userInput.handleInput();
         userInput.handleMouse();
 
+        /* bind fbo */
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         /* draw call */
-        lightShader.bind();
-        lightVAO.bind();
-        lightShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
-        lightShader.setUniformMatrix4fv("model", glm::value_ptr(glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(0.3f, 0.3f, 0.3f)), lightPosition)));
-        lightShader.setUniform4fv("lightColor", glm::value_ptr(lightColor));
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        lightShader.unbind();
-        lightVAO.unbind();
+        float near_plane = 1.0f, far_plane = 7.5f;
+        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        glm::mat4 lightView = glm::lookAt(lightPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
-        planet.draw(defaultShader, camera);
-        rock.draw(defaultShader, camera);
+        simpleDepthShader.bind();
+        simpleDepthShader.setUniformMatrix4fv("lightSpaceMatrix", glm::value_ptr(lightSpaceMatrix));
+
+        // setup light
+        glm::vec3 currLightPosition = lightPosition;
+        glm::mat4 lightModelMats(1.0f);
+        lightModelMats = glm::translate(lightModelMats, lightPosition);
+
+        // draw cube 1
+        cubeVAO.bind();
+        glm::mat4 cubeMat_1(1.0f);
+        cubeMat_1 = glm::rotate(cubeMat_1, glm::radians(30.0f), glm::vec3(0.7, 0.3, 0.4));
+        cubeMat_1 = glm::translate(cubeMat_1, glm::vec3(5.0f, 14.0f, 5.0f));
+        simpleDepthShader.setUniformMatrix4fv("model", glm::value_ptr(cubeMat_1));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        cubeVAO.unbind();
+
+        // draw cube 2
+        cubeVAO.bind();
+        glm::mat4 cubeMat_2(1.0f);
+        cubeMat_2 = glm::translate(cubeMat_2, glm::vec3(5.0f, 5.0f, 15.0f));
+        cubeMat_2 = glm::scale(cubeMat_2, glm::vec3(3.0f, 3.0f, 3.0f));
+        simpleDepthShader.setUniformMatrix4fv("model", glm::value_ptr(cubeMat_2));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        cubeVAO.unbind();
+
+        // draw plane
+        glm::mat4 planeModelMat(1.0f);
+        simpleDepthShader.setUniformMatrix4fv("model", glm::value_ptr(planeModelMat));
+        planeVAO.bind();
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        planeVAO.unbind();
+        simpleDepthShader.unbind();
+
+
+
+        /* draw with fbo */
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glActiveTexture(GL_TEXTURE3);
+        cubeTexture.bind();
+        glActiveTexture(GL_TEXTURE4);
+        planeTexture.bind();
+        glActiveTexture(GL_TEXTURE11);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+
+        /* draw call */
+        // draw light
+        lightShader.bind();
+        lightModelMats = glm::translate(lightModelMats, lightPosition);
+        lightShader.setUniformMatrix4fv("model", glm::value_ptr(lightModelMats));
+        lightShader.setUniformMatrix4fv("cameraMat", glm::value_ptr(camera.getMatrix()));
+
+        lightVAO.bind();
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        lightVAO.unbind();
+        lightShader.unbind();
+
+
+        // setup shadaow map shader
+        shadowMappingShader.bind();
+        shadowMappingShader.setUniformMatrix4fv("projection", glm::value_ptr(camera.getProjectionMat()));
+        shadowMappingShader.setUniformMatrix4fv("view", glm::value_ptr(camera.getViewMat()));
+        shadowMappingShader.setUniformMatrix4fv("lightSpaceMatrix", glm::value_ptr(lightSpaceMatrix));
+        shadowMappingShader.setUniform3fv("viewPos", glm::value_ptr(camera.position));
+        shadowMappingShader.setUniform3fv("lightPos", glm::value_ptr(lightPosition));
+        shadowMappingShader.setUniform1i("shadowMap", 11);
+
+        // draw cube 1
+        shadowMappingShader.bind();
+        cubeVAO.bind();
+        shadowMappingShader.setUniform1i("diffuseTexture", 4);
+        shadowMappingShader.setUniformMatrix4fv("model", glm::value_ptr(cubeMat_1));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        cubeVAO.unbind();
+
+        // draw cube 2
+        cubeVAO.bind();
+        shadowMappingShader.setUniform1i("diffuseTexture", 4);
+        shadowMappingShader.setUniformMatrix4fv("model", glm::value_ptr(cubeMat_2));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        cubeVAO.unbind();
+
+        // draw plane
+        shadowMappingShader.setUniform1i("diffuseTexture", 3);
+        shadowMappingShader.setUniformMatrix4fv("model", glm::value_ptr(planeModelMat));
+        planeVAO.bind();
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        planeVAO.unbind();
+        shadowMappingShader.unbind();
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();
