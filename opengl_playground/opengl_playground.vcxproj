@@ -194,6 +194,8 @@
     <None Include="res\simpleDepth.vs" />
     <None Include="res\simplePhong.fs" />
     <None Include="res\simplePhong.vs" />
+    <None Include="res\testing.fs" />
+    <None Include="res\testing.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

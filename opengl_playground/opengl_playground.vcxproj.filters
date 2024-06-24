@@ -120,5 +120,7 @@
     <None Include="res\simpleDepth.vs" />
     <None Include="res\shadowMapping.vs" />
     <None Include="res\shadowMapping.fs" />
+    <None Include="res\testing.vs" />
+    <None Include="res\testing.fs" />
   </ItemGroup>
 </Project>
