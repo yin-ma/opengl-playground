@@ -287,6 +287,8 @@ int main(void)
         glDrawArrays(GL_TRIANGLES, 0, 36);
         cubeVAO.unbind();
 
+
+
         // draw plane
         shadowMappingShader.setUniform1i("diffuseTexture", 3);
         shadowMappingShader.setUniformMatrix4fv("model", glm::value_ptr(planeModelMat));
