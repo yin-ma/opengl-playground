@@ -20,6 +20,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <chrono>
 
 
 const int SCR_WIDTH = 600;
@@ -69,8 +70,7 @@ int main(void)
     /* opengl config */
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     glClearColor(0.05f, 0.05f, 0.05f, 0.05f);
-    glEnable(GL_DEPTH_TEST);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     /* init camera(position, center, up) */
@@ -86,7 +86,8 @@ int main(void)
 
     /* init shaders */
     Shader shader("./res/testing.vs", "./res/testing.fs");
-
+    shader.bind();
+    vao.bind();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -94,15 +95,9 @@ int main(void)
         userInput.handleInput();
         userInput.handleMouse();
 
-        /* bind fbo */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        shader.bind();
-        vao.bind();
+        glClear(GL_COLOR_BUFFER_BIT);
+        shader.setUniform1f("u_Time", glfwGetTime());
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        vao.unbind();
-        shader.unbind();
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();

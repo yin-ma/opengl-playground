@@ -92,6 +92,12 @@ void Shader::setUniform1i(const std::string& key, int value)
     glUniform1i(glGetUniformLocation(shaderID, key.c_str()), value);
 }
 
+void Shader::setUniform1f(const std::string& key, float value)
+{
+    glUniform1f(glGetUniformLocation(shaderID, key.c_str()), value);
+}
+
+
 void Shader::setUniformMatrix4fv(const std::string& key, const float* mat)
 {
     int matLoc = glGetUniformLocation(shaderID, key.c_str());

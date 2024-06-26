@@ -16,6 +16,7 @@ public:
 	void unbind();
 
 	void setUniform1i(const std::string& key, int value);
+	void setUniform1f(const std::string& key, float value);
 	void setUniform3fv(const std::string& key, const float* vector);
 	void setUniform4fv(const std::string& key, const float* vector);
 	void setUniformMatrix4fv(const std::string& key, const float* mat);
