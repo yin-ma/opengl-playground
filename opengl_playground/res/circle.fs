@@ -32,34 +32,38 @@ float remap(float a, float b, float t)
 	return clamp((t-a) / (b-a), 0.0, 1.0);
 }
 
-
-float distLine(vec3 ro, vec3 rd, vec3 p)
+vec4 Head(vec2 uv)
 {
-	return length(cross(p-ro, rd)) / length(rd);
-}
-	
+	vec4 col = vec4(0.9, 0.65, 0.1, 1.0);
 
+	float d = length(uv);
+	col.a = smoothstep(0.5, 0.49, d);
+
+	float edgeShadow = remap(0.35, 0.5, d);
+	edgeShadow *= edgeShadow;
+	col.rgb *= 1 - edgeShadow * 0.5;
+
+	col.rgb = mix(col.rgb, vec3(0.6, 0.3, 0.1), smoothstep(0.47, 0.48, d));
+
+	float highlight = smoothstep(0.41, 0.405, d);
+	highlight *= remap(-0.41, 0.41, uv.y);
+	col.rgb = mix(col.rgb, vec3(1.0), highlight);
+
+	return col;
+}
+
+vec4 Smiley(vec2 uv)
+{
+	vec4 col = vec4(0.0);
+	vec4 head = Head(uv);
+
+	col = mix(col, head, head.a);
+	return col;
+}
 
 void main()
 {
 	vec2 uv = FragCoord;
 
-	vec3 ro = vec3(0.0, 0.0, -2.0);
-	vec3 rd = vec3(uv.x, uv.y, 0.0) - ro;
-
-	float t = u_Time;
-	mat3 rotationY = mat3(cos(t), 0.0, sin(t),
-                0.0, 1.0, 0.0,
-                -sin(t), 0.0, cos(t));
-	mat3 rotationX = mat3(1.0, 0.0, 0.0,
-                0.0, cos(t), -sin(t),
-                0.0, sin(t), cos(t));
-	vec3 p = rotationX * rotationY * vec3(2.0, 0.0, 0.0);
-	p.z += 10.0;
-	float d = distLine(ro, rd, p);
-	d = smoothstep(0.1, 0.09, d);
-
-	vec2 st = fract(uv*10);
-
-	FragColor = vec4(st, 0.0, 1.0);	
+	FragColor = Smiley(uv);	
 }

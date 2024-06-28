@@ -85,7 +85,7 @@ int main(void)
 
 
     /* init shaders */
-    Shader shader("./res/testing.vs", "./res/testing.fs");
+    Shader shader("./res/testing.vs", "./res/pattern.fs");
     shader.bind();
     vao.bind();
 
