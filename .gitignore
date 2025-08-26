@@ -6,6 +6,25 @@
 *.user
 *.vcxproj.user
 
+
+# Build results
+[Bb]in/
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+x64/
+Win32/
+Win64/
+*.exe
+*.dll
+*.obj
+*.o
+*.lib
+*.pdb
+*.ilk
+*.log
+
+
 # Other
 .DS_Store
 *.sdf
